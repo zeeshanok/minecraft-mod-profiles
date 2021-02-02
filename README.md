@@ -15,3 +15,4 @@ and then run `mod_profiles/build/windows/runner/Release/mod_profiles.exe`
 ## Note
 This app is meant to be run on Windows (though you can build it for other platforms).
 It will break if you try it on any other operating system.
+Windows might tell you "smartscreen protected your device" or something similar, this is because Microsoft has never seen my app and so smartscreen thinks it's malicious (it's not).
