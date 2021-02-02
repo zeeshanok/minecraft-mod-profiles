@@ -1,9 +1,6 @@
-import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mod_profiles/models/profile.dart';
 import 'package:mod_profiles/models/profileModel.dart';
-import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/EscapePop.dart';
 import 'package:mod_profiles/widgets/keyboardHintedIcon.dart';
 import 'package:mod_profiles/widgets/profileEditor.dart';

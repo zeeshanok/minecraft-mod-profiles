@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mod_profiles/models/profile.dart';
 import 'package:mod_profiles/utils/consts.dart';
-import 'package:mod_profiles/widgets/filePickerList.dart';
 
 class ProfileEditor extends StatefulWidget {
   final void Function(Profile profile) onSubmit;

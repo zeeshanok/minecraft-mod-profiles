@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/pages/addProfile.dart';
-import 'package:mod_profiles/pages/editProfile.dart';
 import 'package:mod_profiles/pages/settings.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:provider/provider.dart';
