@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
@@ -41,15 +42,21 @@ class ProfileModel extends ChangeNotifier {
     _read().then((value) => _update(notify: false));
   }
 
-  void addProfile(Profile profile) {
-    List<String> fileNames = [];
-    for (var fileName in profile.mods) {
-      fileNames.add(getFileName(File(fileName)
-          .copySync(path.join(profilesModDir.path, getFileName(fileName)))
-          .path));
-    }
-    _profiles.add(Profile(profile.name, fileNames));
-    _update();
+  Future<void> addProfile(Profile profile) {
+    return Future(() async {
+      List<String> fileNames = [];
+      for (var fileName in profile.mods) {
+        var file = await File(fileName)
+            .copy(path.join(profilesModDir.path, getFileName(fileName)));
+        debugPrint("copied ${file.path}");
+        fileNames.add(getFileName(file.path));
+        debugPrint("added to list");
+      }
+      _profiles.add(Profile(profile.name, fileNames));
+      debugPrint("Made new profle");
+      _update();
+      debugPrint("finished update");
+    });
   }
 
   void removeProfile(int index) {

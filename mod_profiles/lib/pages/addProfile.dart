@@ -12,8 +12,8 @@ class AddProfilePage extends StatefulWidget {
 }
 
 class _AddProfilePageState extends State<AddProfilePage> {
-  void handleSubmit(Profile profile) {
-    Provider.of<ProfileModel>(context, listen: false).addProfile(profile);
+  void handleSubmit(Profile profile) async {
+    await Provider.of<ProfileModel>(context, listen: false).addProfile(profile);
     Navigator.of(context).pop();
   }
 
