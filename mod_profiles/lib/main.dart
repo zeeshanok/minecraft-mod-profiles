@@ -3,9 +3,9 @@ import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/pages/addProfile.dart';
 import 'package:mod_profiles/pages/settings.dart';
 import 'package:mod_profiles/utils/consts.dart';
+import 'package:mod_profiles/pages/home.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/homepage.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(

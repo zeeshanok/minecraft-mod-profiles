@@ -12,11 +12,12 @@ class HintedIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        child: GestureDetector(
+    return GestureDetector(
+      onTap: onPressed,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             icon,
             Text(
@@ -24,7 +25,6 @@ class HintedIconButton extends StatelessWidget {
               style: labelStyle ?? keyboardHintTextStyle(),
             )
           ]),
-          onTap: onPressed,
         ),
       ),
     );

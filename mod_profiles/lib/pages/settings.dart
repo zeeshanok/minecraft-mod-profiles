@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mod_profiles/widgets/EscapePop.dart';
-import 'package:mod_profiles/widgets/keyboardHintedIcon.dart';
+import 'package:mod_profiles/widgets/hintedIcon.dart';
 
 class SettingsPage extends StatelessWidget {
   @override

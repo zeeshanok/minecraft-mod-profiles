@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profile.dart';
 import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/widgets/EscapePop.dart';
-import 'package:mod_profiles/widgets/keyboardHintedIcon.dart';
+import 'package:mod_profiles/widgets/hintedIcon.dart';
 import 'package:mod_profiles/widgets/profileEditor.dart';
 import 'package:provider/provider.dart';
 

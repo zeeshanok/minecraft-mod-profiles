@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/widgets/confirmDialog.dart';
-import 'package:mod_profiles/widgets/keyboardHintedIcon.dart';
+import 'package:mod_profiles/widgets/hintedIcon.dart';
 import 'package:mod_profiles/widgets/profileWidget.dart';
 import 'package:provider/provider.dart';
 
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage>
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text("Mod Profiles"),
         actions: [
-          HintedIconButton(
+          Provider.of<ProfileModel>(context).profiles.length > 0 ? HintedIconButton(
             icon: Icon(
               Icons.delete_sweep_outlined,
               color: Colors.red,
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage>
             onPressed: () => handleClear(context),
             label: "Clear",
             labelStyle: TextStyle(color: Colors.red, fontSize: 13),
-          ),
+          ) : SizedBox.shrink(),
           HintedIconButton(
             onPressed: navigateToAdd,
             icon:
@@ -84,13 +84,13 @@ class _HomePageState extends State<HomePage>
             labelStyle:
                 TextStyle(color: Theme.of(context).accentColor, fontSize: 13),
           ),
-          // HintedIconButton(
-          //     icon: Icon(Icons.settings, size: 18,),
-          //     label: "Settings",
-          //     labelStyle: TextStyle(fontSize: 10),
-          //     onPressed: () {
-          //       Navigator.of(context).pushNamed('settings');
-          //     }),
+          IconButton(
+              icon: Icon(Icons.settings_outlined, size: 22,),
+              // label: "Settings",
+              // labelStyle: TextStyle(fontSize: 13),
+              onPressed: () {
+                Navigator.of(context).pushNamed('settings');
+              }),
           SizedBox(
             width: 10,
           )
