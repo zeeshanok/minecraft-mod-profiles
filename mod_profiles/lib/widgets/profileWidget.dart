@@ -102,7 +102,6 @@ class ProfileWidget extends StatelessWidget {
                         SmallIconButton(
                           icon: Icon(
                             Icons.edit,
-                            color: Colors.grey[100],
                             size: 20,
                           ),
                           onPressed: () {
@@ -116,7 +115,6 @@ class ProfileWidget extends StatelessWidget {
                         SmallIconButton(
                           icon: Icon(
                             Icons.close,
-                            color: Colors.grey[100],
                             size: 20,
                           ),
                           onPressed: () {

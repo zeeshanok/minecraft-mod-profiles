@@ -113,19 +113,11 @@ class _ProfileEditorState extends State<ProfileEditor> {
                         ElevatedButton(
                             onPressed: showFilePicker, child: Text("Browse")),
                         modPaths.isNotEmpty
-                            ? ElevatedButton(
+                            ? OutlinedButton(
                                 onPressed: () =>
                                     setState(() => modPaths.clear()),
-                                child: Text("Clear all files"),
-                                style: ButtonStyle(backgroundColor:
-                                    MaterialStateColor.resolveWith((states) {
-                                  if (states.contains(MaterialState.hovered))
-                                    return Colors.red;
-                                  if (states.contains(MaterialState.pressed))
-                                    return Colors.red[700];
-                                  return Colors.red[600];
-                                })),
-                              )
+                                child: Text("Clear all files"),)
+                              
                             : Container()
                       ],
                     ),

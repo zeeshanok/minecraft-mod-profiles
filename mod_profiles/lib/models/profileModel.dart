@@ -4,18 +4,26 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profile.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:path/path.dart' as path;
 
 class ProfileModel extends ChangeNotifier {
   List<Profile> _profiles = [];
+
   Directory minecraftModDir;
   Directory minecraftDir;
   Directory profilesDir;
   Directory profilesModDir;
   File profilesConfigFile;
   MinecraftDirStatus dirStatus;
+
+  Color _color;
+  Color get themeColor => _color;
+
+  bool _isDarkMode;
+  bool get isDarkMode => _isDarkMode ?? true;
 
   UnmodifiableListView<Profile> get profiles => UnmodifiableListView(_profiles);
 
@@ -39,7 +47,7 @@ class ProfileModel extends ChangeNotifier {
     profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
     profilesModDir = Directory(path.join(profilesDir.path, 'mods'));
     profilesConfigFile = File(path.join(profilesDir.path, "config.json"));
-    _read().then((value) => _update(notify: false));
+    _read().then((value) => _update());
   }
 
   Future<void> addProfile(Profile profile) {
@@ -48,14 +56,10 @@ class ProfileModel extends ChangeNotifier {
       for (var fileName in profile.mods) {
         var file = await File(fileName)
             .copy(path.join(profilesModDir.path, getFileName(fileName)));
-        debugPrint("copied ${file.path}");
         fileNames.add(getFileName(file.path));
-        debugPrint("added to list");
       }
       _profiles.add(Profile(profile.name, fileNames));
-      debugPrint("Made new profle");
       _update();
-      debugPrint("finished update");
     });
   }
 
@@ -109,18 +113,22 @@ class ProfileModel extends ChangeNotifier {
   }
 
   String _generateConfig() {
-    return JsonEncoder.withIndent("   ")
-        .convert({"profiles": _profiles.map((e) => e.toMap()).toList()});
+    return JsonEncoder.withIndent("   ").convert({
+      "profiles": _profiles.map((e) => e.toMap()).toList(),
+      "isDarkMode": _isDarkMode,
+      "themeColor": _color.value,
+    });
   }
 
-  void _update({bool notify = true}) async {
-    _createIfExists();
+  void _update() async {
+    _createIfNotExists();
     var json = _generateConfig();
-    profilesConfigFile.writeAsString(json).then((_) => _read());
-    if (notify) notifyListeners();
+    debugPrint(json);
+    await profilesConfigFile.writeAsString(json);
+    await _read();
   }
 
-  void _createIfExists() {
+  void _createIfNotExists() {
     if (!(profilesConfigFile.existsSync())) {
       profilesConfigFile.createSync(recursive: true);
       profilesConfigFile.writeAsStringSync(jsonEncode({
@@ -134,16 +142,27 @@ class ProfileModel extends ChangeNotifier {
   }
 
   Future _read() async {
-    _createIfExists();
+    _createIfNotExists();
     String content = await profilesConfigFile.readAsString();
     try {
       Map<String, dynamic> json = jsonDecode(content);
+
       var profilesJson = json["profiles"];
       List<Profile> profiles = [];
+
       for (var item in profilesJson) {
         profiles.add(Profile.fromMap(item));
       }
+
       _profiles = [...profiles];
+
+      if (json.containsKey("themeColor")) {
+        var color = Color(json["themeColor"]);
+        debugPrint("parse " + color.hashCode.toString());
+        _color = color;
+      }
+
+      _isDarkMode = json["isDarkMode"] ?? true;
     } on FormatException {
       await profilesConfigFile.writeAsString(_generateConfig());
     } finally {
@@ -154,5 +173,17 @@ class ProfileModel extends ChangeNotifier {
   String getFullProfileModPath(String fileName) {
     if (File(fileName).isAbsolute) return fileName;
     return path.join(profilesModDir.path, fileName);
+  }
+
+  void setColor(Color color) {
+    _color = color;
+    debugPrint(Colors.cyan.value.toRadixString(16) + Colors.cyan.toString());
+    _update();
+    // notifyListeners();
+  }
+
+  void setDarkMode(bool isDark) {
+    _isDarkMode = isDark;
+    _update();
   }
 }

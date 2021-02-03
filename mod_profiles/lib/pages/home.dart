@@ -60,32 +60,38 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    var color = Theme.of(context).appBarTheme.backgroundColor;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: color,
         title: Text("Mod Profiles"),
         actions: [
-          Provider.of<ProfileModel>(context).profiles.length > 0 ? HintedIconButton(
-            icon: Icon(
-              Icons.delete_sweep_outlined,
-              color: Colors.red,
-              size: 23,
-            ),
-            onPressed: () => handleClear(context),
-            label: "Clear",
-            labelStyle: TextStyle(color: Colors.red, fontSize: 13),
-          ) : SizedBox.shrink(),
+          Provider.of<ProfileModel>(context).profiles.length > 0
+              ? HintedIconButton(
+                  icon: Icon(
+                    Icons.delete_sweep_outlined,
+                    size: 23,
+                  ),
+                  onPressed: () => handleClear(context),
+                  label: "Clear",
+                  labelStyle: TextStyle(fontSize: 13),
+                )
+              : SizedBox.shrink(),
           HintedIconButton(
             onPressed: navigateToAdd,
-            icon:
-                Icon(Icons.add, size: 23, color: Theme.of(context).accentColor),
+            icon: Icon(
+              Icons.add,
+              size: 23,
+            ),
             label: "Add",
-            labelStyle:
-                TextStyle(color: Theme.of(context).accentColor, fontSize: 13),
+            labelStyle: TextStyle(fontSize: 13),
           ),
           IconButton(
-              icon: Icon(Icons.settings_outlined, size: 22,),
+              icon: Icon(
+                Icons.settings_outlined,
+                size: 22,
+              ),
               // label: "Settings",
               // labelStyle: TextStyle(fontSize: 13),
               onPressed: () {
