@@ -5,6 +5,7 @@ import 'package:mod_profiles/pages/editProfile.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/confirmDialog.dart';
 import 'package:mod_profiles/widgets/shortenedList.dart';
+import 'package:mod_profiles/widgets/smallIconButton.dart';
 import 'package:provider/provider.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -50,75 +51,83 @@ class ProfileWidget extends StatelessWidget {
                 Border.all(color: Theme.of(context).accentColor, width: 1.5),
             borderRadius: BorderRadius.circular(7)),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  profile.name,
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                // SizedBox.expand(),
-                ShortenedList(
-                  builder: (context, i) {
-                    var mods = profile.modsSorted;
-                    return Text(
-                      getFileName(mods[i]
-                          .substring(0, mods[i].length - 4)
-                          .replaceAll(RegExp(r"[-_]+"), " ")),
-                      style: TextStyle(color: Colors.grey[300]),
-                    );
-                  },
-                  itemCount: profile.mods.length,
-                  maxItems: 0,
-                  shortenedText: 'Show mods',
-                  expandedText: 'Hide',
-                )
-              ],
-            ),
-            Column(
-              children: [
-                ElevatedButton(
-                    onPressed: () => handleActivate(context),
-                    child: Text("Activate")),
-                SizedBox(
-                  height: 2,
-                ),
-                Row(
+            Expanded(
+              flex: 15,
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit,
-                        color: Colors.grey[100],
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(createRoute(EditProfilePage(
-                          profile: profile,
-                          index: index,
-                        )));
-                      },
-                      splashRadius: 16,
-                      visualDensity: VisualDensity.compact,
+                    Text(
+                      profile.name,
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                     ),
-                    IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.grey[100],
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          handleDelete(context);
-                        },
-                        splashRadius: 16,
-                        visualDensity: VisualDensity.compact)
+                    // SizedBox.expand(),
+                    ShortenedList(
+                      builder: (context, i) {
+                        var mods = profile.modsSorted;
+                        return Text(
+                          getFileName(mods[i]
+                              .substring(0, mods[i].length - 4)
+                              .replaceAll(RegExp(r"[-_]+"), " ")),
+                          style: TextStyle(color: Colors.grey[300]),
+                        );
+                      },
+                      itemCount: profile.mods.length,
+                      maxItems: 0,
+                      shortenedText: 'Show mods',
+                      expandedText: 'Hide',
+                    )
                   ],
+                ),
+              ),
+            ),
+            Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () => handleActivate(context),
+                        child: Text("Activate")),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SmallIconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.grey[100],
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(createRoute(EditProfilePage(
+                              profile: profile,
+                              index: index,
+                            )));
+                          },
+                        ),
+                        SmallIconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.grey[100],
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            handleDelete(context);
+                          },
+                        )
+                      ],
+                    )
+                  ],
+                ),
                 )
-              ],
-            )
           ],
         ));
   }
