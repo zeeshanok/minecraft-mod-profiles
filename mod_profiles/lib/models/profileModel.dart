@@ -123,7 +123,6 @@ class ProfileModel extends ChangeNotifier {
   void _update() async {
     _createIfNotExists();
     var json = _generateConfig();
-    debugPrint(json);
     await profilesConfigFile.writeAsString(json);
     await _read();
   }
@@ -158,7 +157,6 @@ class ProfileModel extends ChangeNotifier {
 
       if (json.containsKey("themeColor")) {
         var color = Color(json["themeColor"]);
-        debugPrint("parse " + color.hashCode.toString());
         _color = color;
       }
 
@@ -177,7 +175,6 @@ class ProfileModel extends ChangeNotifier {
 
   void setColor(Color color) {
     _color = color;
-    debugPrint(Colors.cyan.value.toRadixString(16) + Colors.cyan.toString());
     _update();
     // notifyListeners();
   }
