@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 var defaultInputBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.grey),
+    borderSide: BorderSide(color: Colors.grey[800]),
     borderRadius: BorderRadius.circular(7));
 
 String getFileName(String path) {

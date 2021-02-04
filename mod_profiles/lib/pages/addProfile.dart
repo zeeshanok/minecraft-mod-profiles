@@ -12,7 +12,11 @@ class AddProfilePage extends StatefulWidget {
 }
 
 class _AddProfilePageState extends State<AddProfilePage> {
+  bool adding = false;
   void handleSubmit(Profile profile) async {
+    setState(() {
+      adding = true;
+    });
     await Provider.of<ProfileModel>(context, listen: false).addProfile(profile);
     Navigator.of(context).pop();
   }
@@ -28,6 +32,14 @@ class _AddProfilePageState extends State<AddProfilePage> {
           body: ProfileEditor(
             mode: ProfileEditMode.Create,
             onSubmit: (profile) => handleSubmit(profile),
+            icon: adding ? Padding(
+              padding: EdgeInsets.all(5),
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.transparent,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeWidth: 2,
+              ),
+            ) : Icon(Icons.add)
           )),
     );
   }

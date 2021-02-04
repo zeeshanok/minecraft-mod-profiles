@@ -38,7 +38,6 @@ class ProfileWidget extends StatelessWidget {
                       .removeProfile(index);
               },
               title: Text("Are you sure you want to delete this profile?"),
-              content: SizedBox.shrink(),
             ));
   }
 

@@ -8,7 +8,8 @@ class ProfileEditor extends StatefulWidget {
   final void Function(Profile profile) onSubmit;
   final ProfileEditMode mode;
   final Profile profile;
-  ProfileEditor({this.onSubmit, @required this.mode, this.profile});
+  final Widget icon;
+  ProfileEditor({this.onSubmit, @required this.mode, this.profile, this.icon});
 
   @override
   _ProfileEditorState createState() => _ProfileEditorState();
@@ -126,56 +127,60 @@ class _ProfileEditorState extends State<ProfileEditor> {
                       Expanded(
                         child: Container(
                             decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
+                                border: Border.all(color: Colors.grey[800]),
                                 borderRadius: BorderRadius.circular(7)),
                             padding: EdgeInsets.all(5),
-                            child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                              itemCount: modPaths.length,
-                              itemBuilder: (context, i) => Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: GestureDetector(
-                                          child: Icon(
-                                            Icons.close,
-                                            size: 20,
-                                            color: Colors.red,
-                                          ),
-                                          onTap: () => setState(
-                                              () => modPaths.removeAt(i)),
-                                        )),
-                                    SizedBox(width: 6),
-                                    SelectableText(
-                                      modPaths[i].split('\\').last,
-                                    )
-                                  ]),
+                            child: Scrollbar(
+                              isAlwaysShown: true,
+                              thickness: 5,
+                              radius: Radius.circular(7),
+                                                          child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                itemCount: modPaths.length,
+                                itemBuilder: (context, i) => Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      MouseRegion(
+                                          cursor: SystemMouseCursors.click,
+                                          child: GestureDetector(
+                                            child: Icon(
+                                              Icons.close,
+                                              size: 20,
+                                              color: Colors.red,
+                                            ),
+                                            onTap: () => setState(
+                                                () => modPaths.removeAt(i)),
+                                          )),
+                                      SizedBox(width: 6),
+                                      SelectableText(
+                                        modPaths[i].split('\\').last,
+                                      )
+                                    ]),
+                              ),
                             )),
                       )
                   ],
                 ),
               ),
-              ...(widget.mode != ProfileEditMode.View
-                  ? [
-                      SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(
-                        onPressed: modPaths.length > 0 ? handleSubmit : null,
-                        child: Text(
-                          widget.mode == ProfileEditMode.Create
-                              ? "Create Profile"
-                              : "Edit Profile",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        style: ButtonStyle(
-                            padding: MaterialStateProperty.resolveWith(
-                                (states) =>
-                                    EdgeInsets.symmetric(vertical: 16))),
-                      )
-                    ]
-                  : [Container()])
+              if (widget.mode != ProfileEditMode.View) ...[
+                SizedBox(
+                  height: 15,
+                ),
+                ElevatedButton.icon(
+                  onPressed: modPaths.length > 0 ? handleSubmit : null,
+                  icon: SizedBox(
+                      width: 30, height: 30, child: widget.icon ?? Container()),
+                  label: Text(
+                    (widget.mode == ProfileEditMode.Create)
+                        ? "Create Profile"
+                        : "Edit Profile",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.resolveWith(
+                          (states) => EdgeInsets.symmetric(vertical: 16))),
+                )
+              ]
             ],
           ),
         ));

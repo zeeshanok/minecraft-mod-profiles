@@ -20,7 +20,7 @@ class ProfileModel extends ChangeNotifier {
   MinecraftDirStatus dirStatus;
 
   Color _color;
-  Color get themeColor => _color ?? Colors.white;
+  Color get themeColor => _color ?? Colors.cyan;
 
   bool _isDarkMode;
   bool get isDarkMode => _isDarkMode ?? true;

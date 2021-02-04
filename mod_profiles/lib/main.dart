@@ -28,31 +28,32 @@ class ModProfileApp extends StatelessWidget {
                     appBarTheme: AppBarTheme(backgroundColor: model.themeColor),
                     accentColor: model.themeColor))
             .copyWith(
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(primary: model.themeColor)),
-                textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(primary: model.themeColor)),
-                outlinedButtonTheme: OutlinedButtonThemeData(
-                    style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: model.themeColor),
-                  primary: model.themeColor,
-                )),
-                switchTheme: SwitchThemeData(
-                    thumbColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected) ||
-                      states.contains(MaterialState.focused)) {
-                    return model.themeColor;
-                  } else {
-                    return null;
-                  }
-                }), trackColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected) ||
-                      states.contains(MaterialState.focused)) {
-                    return model.themeColor.withAlpha(150);
-                  } else {
-                    return null;
-                  }
-                }))),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(primary: model.themeColor)),
+          textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(primary: model.themeColor)),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+              style: OutlinedButton.styleFrom(
+            side: BorderSide(color: model.themeColor),
+            primary: model.themeColor,
+          )),
+          switchTheme: SwitchThemeData(
+              thumbColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected) ||
+                states.contains(MaterialState.focused)) {
+              return model.themeColor;
+            } else {
+              return null;
+            }
+          }), trackColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected) ||
+                states.contains(MaterialState.focused)) {
+              return model.themeColor.withAlpha(150);
+            } else {
+              return null;
+            }
+          })),
+        ),
         debugShowCheckedModeBanner: false,
         initialRoute: 'home',
         onGenerateRoute: (settings) {
