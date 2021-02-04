@@ -45,19 +45,16 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
             border:
                 Border.all(color: Theme.of(context).accentColor, width: 1.5),
             borderRadius: BorderRadius.circular(7)),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              flex: 15,
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: Column(
+            Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,48 +81,47 @@ class ProfileWidget extends StatelessWidget {
                     )
                   ],
                 ),
-              ),
-            ),
-            Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () => handleActivate(context),
-                        child: Text("Activate")),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SmallIconButton(
-                          icon: Icon(
-                            Icons.edit,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .push(createRoute(EditProfilePage(
-                              profile: profile,
-                              index: index,
-                            )));
-                          },
+            SizedBox(
+              width: 80,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                      onPressed: () => handleActivate(context),
+                      child: Text("Activate")),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SmallIconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          size: 20,
                         ),
-                        SmallIconButton(
-                          icon: Icon(
-                            Icons.close,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            handleDelete(context);
-                          },
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                )
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(createRoute(EditProfilePage(
+                            profile: profile,
+                            index: index,
+                          )));
+                        },
+                      ),
+                      SmallIconButton(
+                        icon: Icon(
+                          Icons.close,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          handleDelete(context);
+                        },
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
           ],
         ));
   }

@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage>
             animation: _animation,
             builder: (context, _) => Column(
               children: [
-                _animation.value > 0 ? Text(progressMessage) : Container(),
+                if (_animation.value > 0) Text(progressMessage),
                 SizedBox(
                   height: 5,
                 ),

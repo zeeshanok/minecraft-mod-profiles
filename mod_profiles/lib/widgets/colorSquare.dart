@@ -33,6 +33,8 @@ class _ColorSquareState extends State<ColorSquare> {
           alignment: Alignment.center,
           children: [
             Container(
+              width: widget.size ?? 20,
+              height: widget.size ?? 20,
               decoration: BoxDecoration(
                   color: widget.color,
                   border: Border.all(
@@ -41,7 +43,7 @@ class _ColorSquareState extends State<ColorSquare> {
                           : widget.color)),
               margin: EdgeInsets.all(3),
             ),
-            widget.active ? Icon(Icons.done) : Container()
+            if (widget.active) Icon(Icons.done)
           ],
         ),
       ),

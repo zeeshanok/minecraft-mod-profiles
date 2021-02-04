@@ -34,14 +34,12 @@ class _ShortenedListState extends State<ShortenedList> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         ...widgets,
-        widget.maxItems < widget.itemCount
-            ? TextButton(
-                onPressed: () => setState(() => shortened = !shortened),
-                child: Text(
-                    shortened ? widget.shortenedText : widget.expandedText),
-                style: ButtonStyle(visualDensity: VisualDensity.compact),
-              )
-            : Container()
+        if (widget.maxItems < widget.itemCount)
+          TextButton(
+            onPressed: () => setState(() => shortened = !shortened),
+            child: Text(shortened ? widget.shortenedText : widget.expandedText),
+            style: ButtonStyle(visualDensity: VisualDensity.compact),
+          )
       ],
     );
   }

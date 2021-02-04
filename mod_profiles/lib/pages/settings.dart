@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profileModel.dart';
+import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/EscapePop.dart';
 import 'package:mod_profiles/widgets/colorPicker.dart';
 import 'package:mod_profiles/widgets/hintedIcon.dart';
@@ -27,49 +28,42 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: EdgeInsets.all(10),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                SettingsSection(
-                    heading: "Customization",
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Text("Theme"),
-                        Row(
-                          children: [
-                            Text("Light Mode"),
-                            Consumer<ProfileModel>(builder: (context, model, child) => Switch.adaptive(
-                              value: model.isDarkMode,
-                              onChanged: (value) => model.setDarkMode(value),
-                            )),
-                            Text("Dark Mode")
-                          ],
-                        ),
-                        SizedBox(width: 5,),
-                        Container(
-                          height: 200,
-                          width: 200,
-                          child: ColorPicker(
-                            colors: [
-                              Colors.cyan,
-                              Colors.red,
-                              Colors.green,
-                              Colors.blue,
-                              Colors.teal,
-                              Colors.purple,
-                              Colors.pink,
-                              Colors.orange
-                            ],
+            child: Consumer<ProfileModel>(
+              builder: (context, model, child) => Column(
+                children: [
+                  SettingsSection(
+                      heading: "Customization",
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ColorPicker(
+                            colors: allowedThemeColors,
                             size: 15,
                             crossAxisCount: 4,
                             initialActive: Theme.of(context).accentColor,
-                            onPressed: (color) =>
-                                Provider.of<ProfileModel>(context, listen: false).setColor(color),
+                            onPressed: (color) => Provider.of<ProfileModel>(
+                                    context,
+                                    listen: false)
+                                .setColor(color),
                           ),
-                        ),
-                      ],
-                    ))
-              ],
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Row(
+                            children: [
+                              Text("Light Mode"),
+                              Switch(
+                                value: model.isDarkMode,
+                                onChanged: (value) => model.setDarkMode(value),
+                              ),
+                              Text("Dark Mode")
+                            ],
+                          ),
+                        ],
+                      )),
+                  SettingsSection(heading: "Folders and paths", child: Column())
+                ],
+              ),
             ),
           ),
         ),

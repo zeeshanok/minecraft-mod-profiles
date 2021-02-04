@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mod_profiles/models/profileModel.dart';
+import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/colorSquare.dart';
+import 'package:provider/provider.dart';
 
 class ColorPicker extends StatefulWidget {
   final List<Color> colors;
@@ -31,11 +34,10 @@ class _ColorPickerState extends State<ColorPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-        crossAxisCount: widget.crossAxisCount ?? 2,
-        children: widget.colors.map(
-          (color) {
-            return ColorSquare(
+
+    List<Widget> colors = widget.colors
+        .map((color) => ColorSquare(
+              size: 40,
               color: color,
               onActive: () {
                 widget.onPressed?.call(color);
@@ -44,8 +46,14 @@ class _ColorPickerState extends State<ColorPicker> {
                 );
               },
               active: active.value == color.value,
-            );
-          },
-        ).toList());
+              hoverBorderColor: Theme.of(context).scaffoldBackgroundColor
+            ))
+        .toList();
+    return Column(
+        children: splitList(colors, widget.crossAxisCount ?? 4)
+            .map((val) => Row(
+                  children: val,
+                ))
+            .toList());
   }
 }

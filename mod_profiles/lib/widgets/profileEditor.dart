@@ -112,51 +112,47 @@ class _ProfileEditorState extends State<ProfileEditor> {
                       children: [
                         ElevatedButton(
                             onPressed: showFilePicker, child: Text("Browse")),
-                        modPaths.isNotEmpty
-                            ? OutlinedButton(
-                                onPressed: () =>
-                                    setState(() => modPaths.clear()),
-                                child: Text("Clear all files"),)
-                              
-                            : Container()
+                        if (modPaths.isNotEmpty)
+                          OutlinedButton(
+                            onPressed: () => setState(() => modPaths.clear()),
+                            child: Text("Clear all files"),
+                          )
                       ],
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    modPaths.length > 0
-                        ? Expanded(
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(7)),
-                                padding: EdgeInsets.all(5),
-                                child: ListView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  itemCount: modPaths.length,
-                                  itemBuilder: (context, i) => Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        MouseRegion(
-                                            cursor: SystemMouseCursors.click,
-                                            child: GestureDetector(
-                                              child: Icon(
-                                                Icons.close,
-                                                size: 20,
-                                                color: Colors.red,
-                                              ),
-                                              onTap: () => setState(
-                                                  () => modPaths.removeAt(i)),
-                                            )),
-                                        SizedBox(width: 6),
-                                        SelectableText(
-                                          modPaths[i].split('\\').last,
-                                        )
-                                      ]),
-                                )),
-                          )
-                        : Container(),
+                    if (modPaths.length > 0)
+                      Expanded(
+                        child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(7)),
+                            padding: EdgeInsets.all(5),
+                            child: ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              itemCount: modPaths.length,
+                              itemBuilder: (context, i) => Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: GestureDetector(
+                                          child: Icon(
+                                            Icons.close,
+                                            size: 20,
+                                            color: Colors.red,
+                                          ),
+                                          onTap: () => setState(
+                                              () => modPaths.removeAt(i)),
+                                        )),
+                                    SizedBox(width: 6),
+                                    SelectableText(
+                                      modPaths[i].split('\\').last,
+                                    )
+                                  ]),
+                            )),
+                      )
                   ],
                 ),
               ),

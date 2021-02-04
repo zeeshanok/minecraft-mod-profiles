@@ -29,3 +29,28 @@ Route createRoute(Widget page) {
 TextStyle keyboardHintTextStyle() {
   return TextStyle(fontSize: 8, letterSpacing: 1.2, color: Colors.grey[200]);
 }
+
+const allowedThemeColors = [
+  Colors.cyan,
+  Colors.red,
+  Colors.green,
+  Colors.blue,
+  Colors.teal,
+  Colors.purple,
+  Colors.pink,
+  Colors.orange
+];
+
+List<List<T>> splitList<T>(List<T> list, int count) {
+  List<List<T>> newList = [];
+  List<T> temp = [];
+  for (int i = 0; i < list.length; i++) {
+    if ((i % count == 0) && i != 0) {
+      newList.add([...temp]);
+      temp = [];
+    }
+    temp.add(list[i]);
+  }
+  if (temp.isNotEmpty) newList.add(temp);
+  return newList;
+}

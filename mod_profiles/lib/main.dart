@@ -12,47 +12,47 @@ void main() {
 }
 
 class ModProfileApp extends StatelessWidget {
-  // ThemeData generateTheme(ProfileModel model) {
-  //   return (model.isDarkMode ? ThemeData.dark() : ThemeData.light()).copyWith(
-  //     appBarTheme: AppBarTheme(
-  //       backgroundColor: model.isDarkMode ? Colors.transparent : model.themeColor
-  //     ),
-  //     scaffoldBackgroundColor: model.isDarkMode ? Colors.black : null
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ProfileModel>(builder: (context, model, child) {
       return MaterialApp(
         title: 'Mod Profiles',
         theme: (model.isDarkMode
-            ? ThemeData.dark().copyWith(
-                accentColor: model.themeColor,
-                scaffoldBackgroundColor: Colors.black,
-                appBarTheme: AppBarTheme(backgroundColor: Colors.transparent),
-              )
-            : ThemeData.light().copyWith(
-                appBarTheme: AppBarTheme(backgroundColor: model.themeColor),
-                accentColor: model.themeColor)).copyWith(
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      primary: model.themeColor
-                    )
-                  ),
-                  textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(
-                      primary: model.themeColor
-                    )
-                  ),
-                  outlinedButtonTheme: OutlinedButtonThemeData(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: model.themeColor),
-                      primary: model.themeColor,
-                      // onSurface: model.themeColor
-                    )
+                ? ThemeData.dark().copyWith(
+                    accentColor: model.themeColor,
+                    scaffoldBackgroundColor: Colors.black,
+                    appBarTheme:
+                        AppBarTheme(backgroundColor: Colors.transparent),
                   )
-                ),
+                : ThemeData.light().copyWith(
+                    appBarTheme: AppBarTheme(backgroundColor: model.themeColor),
+                    accentColor: model.themeColor))
+            .copyWith(
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ElevatedButton.styleFrom(primary: model.themeColor)),
+                textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(primary: model.themeColor)),
+                outlinedButtonTheme: OutlinedButtonThemeData(
+                    style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: model.themeColor),
+                  primary: model.themeColor,
+                )),
+                switchTheme: SwitchThemeData(
+                    thumbColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected) ||
+                      states.contains(MaterialState.focused)) {
+                    return model.themeColor;
+                  } else {
+                    return null;
+                  }
+                }), trackColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected) ||
+                      states.contains(MaterialState.focused)) {
+                    return model.themeColor.withAlpha(150);
+                  } else {
+                    return null;
+                  }
+                }))),
         debugShowCheckedModeBanner: false,
         initialRoute: 'home',
         onGenerateRoute: (settings) {
