@@ -17,44 +17,44 @@ class ModProfileApp extends StatelessWidget {
     return Consumer<ProfileModel>(builder: (context, model, child) {
       return MaterialApp(
         title: 'Mod Profiles',
-        theme: (model.isDarkMode
+        theme: (model.settings.isDarkMode
                 ? ThemeData.dark().copyWith(
-                    accentColor: model.themeColor,
+                    accentColor: model.settings.themeColor,
                     scaffoldBackgroundColor: Colors.black,
                   )
                 : ThemeData.light().copyWith(
-                    accentColor: model.themeColor))
+                    accentColor: model.settings.themeColor))
             .copyWith(
           elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(primary: model.themeColor)),
+              style: ElevatedButton.styleFrom(primary: model.settings.themeColor)),
           textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(primary: model.themeColor)),
+              style: TextButton.styleFrom(primary: model.settings.themeColor)),
           outlinedButtonTheme: OutlinedButtonThemeData(
               style: OutlinedButton.styleFrom(
-            side: BorderSide(color: model.themeColor),
-            primary: model.themeColor,
+            side: BorderSide(color: model.settings.themeColor),
+            primary: model.settings.themeColor,
           )),
           switchTheme: SwitchThemeData(
               thumbColor: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected) ||
                 states.contains(MaterialState.focused)) {
-              return model.themeColor;
+              return model.settings.themeColor;
             } else {
               return null;
             }
           }), trackColor: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected) ||
                 states.contains(MaterialState.focused)) {
-              return model.themeColor.withAlpha(150);
+              return model.settings.themeColor.withAlpha(150);
             } else {
               return null;
             }
           })),
           appBarTheme: AppBarTheme(
             elevation: 0,
-            backgroundColor: model.isDarkMode ? Colors.transparent: model.themeColor
+            backgroundColor: model.settings.isDarkMode ? Colors.transparent: model.settings.themeColor
           ),
-          dialogBackgroundColor: model.isDarkMode ? Colors.black : ThemeData.light().scaffoldBackgroundColor
+          dialogBackgroundColor: model.settings.isDarkMode ? Colors.black : ThemeData.light().scaffoldBackgroundColor
         ),
         debugShowCheckedModeBanner: false,
         initialRoute: 'home',

@@ -6,34 +6,27 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profile.dart';
+import 'package:mod_profiles/models/settings.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:path/path.dart' as path;
 
 class ProfileModel extends ChangeNotifier {
   List<Profile> _profiles = [];
 
-  Directory minecraftModDir;
-  Directory minecraftDir;
-  Directory profilesDir;
-  Directory profilesModDir;
-  File profilesConfigFile;
-  MinecraftDirStatus dirStatus;
-
-  Color _color;
-  Color get themeColor => _color ?? Colors.cyan;
-
-  bool _isDarkMode;
-  bool get isDarkMode => _isDarkMode ?? true;
+  ProfileSettings settings;
 
   UnmodifiableListView<Profile> get profiles => UnmodifiableListView(_profiles);
 
   ProfileModel() {
     MinecraftDirStatus status;
     var env = Platform.environment;
+
+    var minecraftDir = Directory(
+        path.join(env["USERPROFILE"], "AppData", "Roaming", ".minecraft"));
+    var minecraftModDir = Directory(path.join(minecraftDir.path, "mods"));
+    var profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
+
     if (env.containsKey("USERPROFILE")) {
-      minecraftDir = Directory(
-          path.join(env["USERPROFILE"], "AppData", "Roaming", ".minecraft"));
-      minecraftModDir = Directory(path.join(minecraftDir.path, "mods"));
       if (minecraftModDir.existsSync())
         status = MinecraftDirStatus.ModsDir;
       else if (minecraftDir.existsSync())
@@ -43,10 +36,14 @@ class ProfileModel extends ChangeNotifier {
     } else {
       status = MinecraftDirStatus.NoUserDir;
     }
-    dirStatus = status;
-    profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
-    profilesModDir = Directory(path.join(profilesDir.path, 'mods'));
-    profilesConfigFile = File(path.join(profilesDir.path, "config.json"));
+    settings = ProfileSettings(
+      dirStatus: status,
+      profilesDir: profilesDir,
+      profilesModDir: Directory(path.join(profilesDir.path, 'mods')),
+      profilesConfigFile: File(path.join(profilesDir.path, "config.json")),
+      minecraftDir: minecraftDir,
+      minecraftModDir: minecraftModDir,
+    );
     _read().then((value) async => await _update());
   }
 
@@ -54,8 +51,8 @@ class ProfileModel extends ChangeNotifier {
     return Future(() async {
       List<String> fileNames = [];
       for (var fileName in profile.mods) {
-        var file = await File(fileName)
-            .copy(path.join(profilesModDir.path, getFileName(fileName)));
+        var file = await File(fileName).copy(
+            path.join(settings.profilesModDir.path, getFileName(fileName)));
         fileNames.add(getFileName(file.path));
       }
       _profiles.add(Profile(profile.name, fileNames));
@@ -81,7 +78,7 @@ class ProfileModel extends ChangeNotifier {
 
   Stream<List<dynamic>> activate(int index) async* {
     var profile = _profiles[index];
-    var minecraftDirMods = await minecraftModDir.list().toList();
+    var minecraftDirMods = await settings.minecraftModDir.list().toList();
     int total = minecraftDirMods.length + profile.mods.length;
     int count = 0;
     for (var mod in minecraftDirMods) {
@@ -92,8 +89,8 @@ class ProfileModel extends ChangeNotifier {
     for (var mod in profile.mods) {
       count += 1;
       yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
-      await File(path.join(profilesModDir.path, mod))
-          .copy(path.join(minecraftModDir.path, mod));
+      await File(path.join(settings.profilesModDir.path, mod))
+          .copy(path.join(settings.minecraftModDir.path, mod));
     }
   }
 
@@ -101,7 +98,7 @@ class ProfileModel extends ChangeNotifier {
     List<String> newFileNames = [];
     for (var fileName in fileNames) {
       var file = await File(fileName)
-          .copy(path.join(profilesModDir.path, getFileName(fileName)));
+          .copy(path.join(settings.profilesModDir.path, getFileName(fileName)));
       newFileNames.add(file.path);
     }
     return newFileNames;
@@ -110,34 +107,34 @@ class ProfileModel extends ChangeNotifier {
   String _generateConfig() {
     return JsonEncoder.withIndent("   ").convert({
       "profiles": _profiles.map((e) => e.toMap()).toList(),
-      "isDarkMode": _isDarkMode,
-      "themeColor": _color.value,
+      "isDarkMode": settings.isDarkMode,
+      "themeColor": settings.themeColor.value,
     });
   }
 
   Future _update() async {
     _createIfNotExists();
     var json = _generateConfig();
-    await profilesConfigFile.writeAsString(json);
+    await settings.profilesConfigFile.writeAsString(json);
     await _read();
   }
 
   void _createIfNotExists() async {
-    if (!(await profilesConfigFile.exists())) {
-      await profilesConfigFile.create(recursive: true);
-      await profilesConfigFile.writeAsString(jsonEncode({
+    if (!(await settings.profilesConfigFile.exists())) {
+      await settings.profilesConfigFile.create(recursive: true);
+      await settings.profilesConfigFile.writeAsString(jsonEncode({
         "profiles": [],
       }));
-      debugPrint("created config file in ${profilesConfigFile.path}");
+      debugPrint("created config file in ${settings.profilesConfigFile.path}");
     }
-    if (!(await profilesModDir.exists())) {
-      await profilesModDir.create();
+    if (!(await settings.profilesModDir.exists())) {
+      await settings.profilesModDir.create();
     }
   }
 
   Future _read() async {
     _createIfNotExists();
-    String content = await profilesConfigFile.readAsString();
+    String content = await settings.profilesConfigFile.readAsString();
     try {
       Map<String, dynamic> json = jsonDecode(content);
 
@@ -152,12 +149,12 @@ class ProfileModel extends ChangeNotifier {
 
       if (json.containsKey("themeColor")) {
         var color = Color(json["themeColor"]);
-        _color = color;
+        settings.themeColor = color;
       }
 
-      _isDarkMode = json["isDarkMode"] ?? true;
+      settings.isDarkMode = json["isDarkMode"] ?? true;
     } on FormatException {
-      await profilesConfigFile.writeAsString(_generateConfig());
+      await settings.profilesConfigFile.writeAsString(_generateConfig());
     } finally {
       notifyListeners();
     }
@@ -165,17 +162,16 @@ class ProfileModel extends ChangeNotifier {
 
   String getFullProfileModPath(String fileName) {
     if (File(fileName).isAbsolute) return fileName;
-    return path.join(profilesModDir.path, fileName);
+    return path.join(settings.profilesModDir.path, fileName);
   }
 
-  void setColor(Color color) {
-    _color = color;
+  void setThemeColor(Color color) {
+    settings.themeColor = color;
     _update();
-    // notifyListeners();
   }
 
   void setDarkMode(bool isDark) {
-    _isDarkMode = isDark;
+    settings.isDarkMode = isDark;
     _update();
   }
 }

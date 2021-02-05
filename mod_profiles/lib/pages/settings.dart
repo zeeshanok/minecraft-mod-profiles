@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/utils/consts.dart';
@@ -14,6 +16,10 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final testKey = GlobalKey();
+
+  void openPath(ProfileModel model, String path) async {
+    await Process.run("explorer.exe", [path]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +50,66 @@ class _SettingsPageState extends State<SettingsPage> {
                             onPressed: (color) => Provider.of<ProfileModel>(
                                     context,
                                     listen: false)
-                                .setColor(color),
+                                .setThemeColor(color),
                           ),
                           SizedBox(
                             width: 5,
                           ),
                           Row(
                             children: [
-                              Text("Dark Mode", style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text("Dark Mode",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Switch(
-                                value: model.isDarkMode,
+                                value: model.settings.isDarkMode,
                                 onChanged: (value) => model.setDarkMode(value),
                               ),
-                              Text(model.isDarkMode ? "ON" : "OFF", style: TextStyle(letterSpacing: 1.4, fontSize: 10),)
+                              Text(
+                                model.settings.isDarkMode ? "ON" : "OFF",
+                                style:
+                                    TextStyle(letterSpacing: 1.4, fontSize: 10),
+                              )
                             ],
                           ),
                         ],
                       )),
-                  SettingsSection(heading: "Folders and paths", child: Column())
+                  SettingsSection(
+                      heading: "Folders and paths",
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            OutlinedButton(
+                                onPressed: () =>
+                                    openPath(model, model.settings.profilesDir.path),
+                                child: Text("Open")),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Profile config folder"),
+                          ]),
+                          SizedBox(height: 5,),
+                          Row(children: [
+                            OutlinedButton(
+                                onPressed: () =>
+                                    openPath(model, model.settings.minecraftModDir.path),
+                                child: Text("Open")),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Minecraft mods folder"),
+                          ])
+                        ],
+                      )),
+                  // SettingsSection(
+                  //   heading: "Confirmation Dialogs",
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                        
+                  //     ],
+                  //   )
+                  // )
                 ],
               ),
             ),

@@ -67,13 +67,13 @@ class _HomePageState extends State<HomePage>
     await _setTarget(0);
     await Future.delayed(Duration(milliseconds: 200));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: model.themeColor,
+      backgroundColor: model.settings.themeColor,
       content: Text("Activated ${model.profiles[index].name}", style: TextStyle(color: Colors.white),),
       action: SnackBarAction(
         label: "Open mods folder",
         textColor: Colors.white,
         onPressed: () {
-          Process.run("explorer.exe", [model.minecraftModDir.path], runInShell: true);
+          Process.run("explorer.exe", [model.settings.minecraftModDir.path], runInShell: true);
         },
       ),
       // behavior: SnackBarBehavior.floating,
