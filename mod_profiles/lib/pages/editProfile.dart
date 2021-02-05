@@ -6,23 +6,31 @@ import 'package:mod_profiles/widgets/hintedIcon.dart';
 import 'package:mod_profiles/widgets/profileEditor.dart';
 import 'package:provider/provider.dart';
 
-class EditProfilePage extends StatelessWidget {
+class EditProfilePage extends StatefulWidget {
   final Profile profile;
   final int index;
 
   EditProfilePage({this.profile, this.index});
 
-  void handleEdit(BuildContext context, Profile profile) {
-    Provider.of<ProfileModel>(context, listen: false)
-        .editProfile(index, profile);
+  @override
+  _EditProfilePageState createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  bool editing = false;
+
+  void handleEdit(BuildContext context, Profile profile) async {
+    setState(() => editing = true);
+    await Provider.of<ProfileModel>(context, listen: false)
+        .editProfile(widget.index, profile);
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     Profile p = Profile(
-        profile.name,
-        profile.mods
+        widget.profile.name,
+        widget.profile.mods
             .map((e) => Provider.of<ProfileModel>(context, listen: false)
                 .getFullProfileModPath(e))
             .toList());
@@ -36,6 +44,8 @@ class EditProfilePage extends StatelessWidget {
             mode: ProfileEditMode.Edit,
             profile: p,
             onSubmit: (profile) => handleEdit(context, profile),
+            submitButtonIcon: Icon(Icons.done),
+            showButtonSpinner: editing,
           )),
     );
   }

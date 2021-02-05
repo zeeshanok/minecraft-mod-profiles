@@ -32,14 +32,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
           body: ProfileEditor(
             mode: ProfileEditMode.Create,
             onSubmit: (profile) => handleSubmit(profile),
-            icon: adding ? Padding(
-              padding: EdgeInsets.all(5),
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.transparent,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 2,
-              ),
-            ) : Icon(Icons.add)
+            submitButtonIcon: Icon(Icons.add),
+            showButtonSpinner: adding,
           )),
     );
   }

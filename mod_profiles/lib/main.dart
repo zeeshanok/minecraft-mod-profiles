@@ -21,11 +21,8 @@ class ModProfileApp extends StatelessWidget {
                 ? ThemeData.dark().copyWith(
                     accentColor: model.themeColor,
                     scaffoldBackgroundColor: Colors.black,
-                    appBarTheme:
-                        AppBarTheme(backgroundColor: Colors.transparent),
                   )
                 : ThemeData.light().copyWith(
-                    appBarTheme: AppBarTheme(backgroundColor: model.themeColor),
                     accentColor: model.themeColor))
             .copyWith(
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -53,6 +50,11 @@ class ModProfileApp extends StatelessWidget {
               return null;
             }
           })),
+          appBarTheme: AppBarTheme(
+            elevation: 0,
+            backgroundColor: model.isDarkMode ? Colors.transparent: model.themeColor
+          ),
+          dialogBackgroundColor: model.isDarkMode ? Colors.black : ThemeData.light().scaffoldBackgroundColor
         ),
         debugShowCheckedModeBanner: false,
         initialRoute: 'home',

@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     _tween = Tween(begin: 0, end: 0);
     _animation = _tween
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
@@ -56,6 +56,29 @@ class _HomePageState extends State<HomePage>
               Provider.of<ProfileModel>(context, listen: false).clearProfiles();
           }),
     );
+  }
+
+  void handleActivate(
+      {BuildContext context, ProfileModel model, int index}) async {
+    await for (var item in model.activate(index)) {
+      progressMessage = item[2];
+      _setTarget(item[0] / item[1]);
+    }
+    await _setTarget(0);
+    await Future.delayed(Duration(milliseconds: 200));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: model.themeColor,
+      content: Text("Activated ${model.profiles[index].name}", style: TextStyle(color: Colors.white),),
+      action: SnackBarAction(
+        label: "Open mods folder",
+        textColor: Colors.white,
+        onPressed: () {
+          Process.run("explorer.exe", [model.minecraftModDir.path], runInShell: true);
+        },
+      ),
+      // behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 2),
+    ));
   }
 
   @override
@@ -114,19 +137,14 @@ class _HomePageState extends State<HomePage>
                 return length > 0
                     ? ListView.separated(
                         separatorBuilder: (context, index) =>
-                            SizedBox(height: 20),
-                        itemBuilder: (context, i) {
+                            SizedBox(height: 18),
+                        itemBuilder: (listContext, i) {
                           var profile = model.profiles[i];
                           return ProfileWidget(
                             profile,
                             i,
-                            onActivate: (context) async {
-                              await for (var item in model.activate(i)) {
-                                progressMessage = item[2];
-                                _setTarget(item[0] / item[1]);
-                              }
-                              _setTarget(0);
-                            },
+                            onActivate: (context) => handleActivate(
+                                context: listContext, model: model, index: i),
                           );
                         },
                         itemCount: length,
@@ -165,10 +183,10 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  _setTarget(double val) {
+  Future _setTarget(double val) {
     _tween.begin = _tween.end;
     _controller.reset();
     _tween.end = val;
-    _controller.forward();
+    return _controller.forward();
   }
 }

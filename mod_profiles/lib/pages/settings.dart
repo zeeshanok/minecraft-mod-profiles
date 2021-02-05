@@ -32,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
               builder: (context, model, child) => Column(
                 children: [
                   SettingsSection(
-                      heading: "Customization",
+                      heading: "Theme",
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -51,12 +51,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           Row(
                             children: [
-                              Text("Light Mode"),
+                              Text("Dark Mode", style: TextStyle(fontWeight: FontWeight.bold)),
                               Switch(
                                 value: model.isDarkMode,
                                 onChanged: (value) => model.setDarkMode(value),
                               ),
-                              Text("Dark Mode")
+                              Text(model.isDarkMode ? "ON" : "OFF", style: TextStyle(letterSpacing: 1.4, fontSize: 10),)
                             ],
                           ),
                         ],

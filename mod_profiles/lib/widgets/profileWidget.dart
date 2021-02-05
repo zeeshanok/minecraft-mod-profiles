@@ -54,32 +54,61 @@ class ProfileWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      profile.name,
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                    ),
-                    // SizedBox.expand(),
-                    ShortenedList(
-                      builder: (context, i) {
-                        var mods = profile.modsSorted;
-                        return Text(
-                          getFileName(mods[i]
-                              .substring(0, mods[i].length - 4)
-                              .replaceAll(RegExp(r"[-_]+"), " ")),
-                          style: TextStyle(color: Colors.grey[300]),
-                        );
-                      },
-                      itemCount: profile.mods.length,
-                      maxItems: 0,
-                      shortenedText: 'Show mods',
-                      expandedText: 'Hide',
-                    )
-                  ],
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  profile.name,
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
+                // ShortenedList(
+                //   builder: (context, i) {
+                //     var mods = profile.modsSorted;
+                //     return Text(
+                //       getFileName(mods[i]
+                //           .substring(0, mods[i].length - 4)
+                //           .replaceAll(RegExp(r"[-_]+"), " ")),
+                //       style: TextStyle(color: Colors.grey[300]),
+                //     );
+                //   },
+                //   itemCount: profile.mods.length,
+                //   maxItems: 0,
+                //   shortenedText: 'Show mods',
+                //   expandedText: 'Hide',
+                // )
+                TextButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (context) => AlertDialog(
+                          content: SizedBox(
+                              height: 200,
+                              width: 400,
+                              child: Scrollbar(
+                                thickness: 5,
+                                isAlwaysShown: true,
+                                  child: ListView.builder(
+                                      itemCount: profile.mods.length,
+                                      itemBuilder: (context, i) =>
+                                          SelectableText(getFileName(profile
+                                              .mods[i]
+                                              .substring(
+                                                  0, profile.mods[i].length - 4)
+                                              .replaceAll(
+                                                  RegExp(r"[-_]+"), " ")))))),
+                          title: Text("Mods"),
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text("Ok"))
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text("Show mods"))
+              ],
+            ),
             SizedBox(
               width: 80,
               child: Column(

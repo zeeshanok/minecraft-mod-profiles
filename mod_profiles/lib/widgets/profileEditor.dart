@@ -8,8 +8,14 @@ class ProfileEditor extends StatefulWidget {
   final void Function(Profile profile) onSubmit;
   final ProfileEditMode mode;
   final Profile profile;
-  final Widget icon;
-  ProfileEditor({this.onSubmit, @required this.mode, this.profile, this.icon});
+  final Widget submitButtonIcon;
+  final bool showButtonSpinner;
+  ProfileEditor(
+      {this.onSubmit,
+      @required this.mode,
+      this.profile,
+      this.submitButtonIcon,
+      this.showButtonSpinner});
 
   @override
   _ProfileEditorState createState() => _ProfileEditorState();
@@ -18,7 +24,6 @@ class ProfileEditor extends StatefulWidget {
 class _ProfileEditorState extends State<ProfileEditor> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-
   List<String> modPaths = [];
 
   void handleSubmit() {
@@ -42,6 +47,7 @@ class _ProfileEditorState extends State<ProfileEditor> {
 
   @override
   void initState() {
+
     if (widget.mode != ProfileEditMode.Create) {
       modPaths = [...widget.profile.mods];
       nameController.text =
@@ -134,11 +140,12 @@ class _ProfileEditorState extends State<ProfileEditor> {
                               isAlwaysShown: true,
                               thickness: 5,
                               radius: Radius.circular(7),
-                                                          child: ListView.builder(
+                              child: ListView.builder(
                                 physics: BouncingScrollPhysics(),
                                 itemCount: modPaths.length,
                                 itemBuilder: (context, i) => Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       MouseRegion(
                                           cursor: SystemMouseCursors.click,
@@ -167,9 +174,21 @@ class _ProfileEditorState extends State<ProfileEditor> {
                   height: 15,
                 ),
                 ElevatedButton.icon(
-                  onPressed: modPaths.length > 0 ? handleSubmit : null,
+                  onPressed: modPaths.length > 0 && !widget.showButtonSpinner ? handleSubmit : null,
                   icon: SizedBox(
-                      width: 30, height: 30, child: widget.icon ?? Container()),
+                      width: 28,
+                      height: 28,
+                      child: (widget.showButtonSpinner ?? false)
+                          ? Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: CircularProgressIndicator(
+                                backgroundColor: Colors.transparent,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                strokeWidth: 2,
+                              ),
+                          )
+                          : widget.submitButtonIcon),
                   label: Text(
                     (widget.mode == ProfileEditMode.Create)
                         ? "Create Profile"

@@ -47,10 +47,10 @@ class ProfileModel extends ChangeNotifier {
     profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
     profilesModDir = Directory(path.join(profilesDir.path, 'mods'));
     profilesConfigFile = File(path.join(profilesDir.path, "config.json"));
-    _read().then((value) => _update());
+    _read().then((value) async => await _update());
   }
 
-  Future<void> addProfile(Profile profile) {
+  Future<void> addProfile(Profile profile) async {
     return Future(() async {
       List<String> fileNames = [];
       for (var fileName in profile.mods) {
@@ -59,55 +59,50 @@ class ProfileModel extends ChangeNotifier {
         fileNames.add(getFileName(file.path));
       }
       _profiles.add(Profile(profile.name, fileNames));
-      _update();
+      await _update();
     });
   }
 
-  void removeProfile(int index) {
-    _profiles.removeAt(index);
-    _update();
+  Future editProfile(int index, Profile newProfile) async {
+    var newFiles = await _copyToProfileModsDir(newProfile.mods);
+    _profiles[index] = Profile(newProfile.name, newFiles);
+    await _update();
   }
 
-  void clearProfiles() {
+  void removeProfile(int index) async {
+    _profiles.removeAt(index);
+    await _update();
+  }
+
+  void clearProfiles() async {
     _profiles.clear();
-    _update();
+    await _update();
   }
 
   Stream<List<dynamic>> activate(int index) async* {
     var profile = _profiles[index];
-    var minecraftDirMods = minecraftModDir.listSync();
+    var minecraftDirMods = await minecraftModDir.list().toList();
     int total = minecraftDirMods.length + profile.mods.length;
-    for (int i = 0; i < minecraftDirMods.length; i++) {
-      yield [
-        i,
-        total,
-        "Deleting ${getFileName(minecraftDirMods[i].path)} in mods folder"
-      ];
-      await minecraftDirMods[i].delete();
+    int count = 0;
+    for (var mod in minecraftDirMods) {
+      count += 1;
+      yield [count, total, "Deleting ${getFileName(mod.path)} in mods folder"];
+      await mod.delete();
     }
-    for (int i = 0; i < profile.mods.length; i++) {
-      yield [
-        profile.mods.length + i,
-        total,
-        "Copying ${getFileName(profile.mods[i])} into mods folder"
-      ];
-      await File(path.join(profilesModDir.path, profile.mods[i]))
-          .copy(path.join(minecraftModDir.path, profile.mods[i]));
+    for (var mod in profile.mods) {
+      count += 1;
+      yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
+      await File(path.join(profilesModDir.path, mod))
+          .copy(path.join(minecraftModDir.path, mod));
     }
   }
 
-  void editProfile(int index, Profile newProfile) {
-    _profiles[index] =
-        Profile(newProfile.name, _copyToProfileModsDir(newProfile.mods));
-    _update();
-  }
-
-  List<String> _copyToProfileModsDir(List<String> fileNames) {
+  Future<List<String>> _copyToProfileModsDir(List<String> fileNames) async {
     List<String> newFileNames = [];
     for (var fileName in fileNames) {
-      newFileNames.add(getFileName(File(fileName)
-          .copySync(path.join(profilesModDir.path, getFileName(fileName)))
-          .path));
+      var file = await File(fileName)
+          .copy(path.join(profilesModDir.path, getFileName(fileName)));
+      newFileNames.add(file.path);
     }
     return newFileNames;
   }
@@ -120,23 +115,23 @@ class ProfileModel extends ChangeNotifier {
     });
   }
 
-  void _update() async {
+  Future _update() async {
     _createIfNotExists();
     var json = _generateConfig();
     await profilesConfigFile.writeAsString(json);
     await _read();
   }
 
-  void _createIfNotExists() {
-    if (!(profilesConfigFile.existsSync())) {
-      profilesConfigFile.createSync(recursive: true);
-      profilesConfigFile.writeAsStringSync(jsonEncode({
+  void _createIfNotExists() async {
+    if (!(await profilesConfigFile.exists())) {
+      await profilesConfigFile.create(recursive: true);
+      await profilesConfigFile.writeAsString(jsonEncode({
         "profiles": [],
       }));
       debugPrint("created config file in ${profilesConfigFile.path}");
     }
-    if (!(profilesModDir.existsSync())) {
-      profilesModDir.createSync();
+    if (!(await profilesModDir.exists())) {
+      await profilesModDir.create();
     }
   }
 
