@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.9.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -27,6 +27,7 @@ dependencies:
   path: ^1.7.0
   provider: ^4.0.0
   file_picker_cross: ^4.2.7
+  copy_with_extension: ^1.4.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -38,6 +39,8 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  copy_with_extension_gen: ^1.4.0
+  build_runner: ^1.10.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -10,7 +10,7 @@ import 'package:mod_profiles/models/settings.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:path/path.dart' as path;
 
-class ProfileModel extends ChangeNotifier {
+class ProfileModel extends ChangeNotifier implements JsonConfig {
   List<Profile> _profiles = [];
 
   ProfileSettings settings;
@@ -18,32 +18,10 @@ class ProfileModel extends ChangeNotifier {
   UnmodifiableListView<Profile> get profiles => UnmodifiableListView(_profiles);
 
   ProfileModel() {
-    MinecraftDirStatus status;
-    var env = Platform.environment;
-
-    var minecraftDir = Directory(
-        path.join(env["USERPROFILE"], "AppData", "Roaming", ".minecraft"));
-    var minecraftModDir = Directory(path.join(minecraftDir.path, "mods"));
-    var profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
-
-    if (env.containsKey("USERPROFILE")) {
-      if (minecraftModDir.existsSync())
-        status = MinecraftDirStatus.ModsDir;
-      else if (minecraftDir.existsSync())
-        status = MinecraftDirStatus.MinecraftDir;
-      else
-        status = MinecraftDirStatus.NoMinecraftDir;
-    } else {
-      status = MinecraftDirStatus.NoUserDir;
-    }
-    settings = ProfileSettings(
-      dirStatus: status,
-      profilesDir: profilesDir,
-      profilesModDir: Directory(path.join(profilesDir.path, 'mods')),
-      profilesConfigFile: File(path.join(profilesDir.path, "config.json")),
-      minecraftDir: minecraftDir,
-      minecraftModDir: minecraftModDir,
-    );
+    settings = ProfileSettings.defaultSettings().copyWith(
+        onUpdate: _update,
+        confirmations:
+            ConfirmationSettings.defaultSettings().copyWith(onUpdate: _update));
     _read().then((value) async => await _update());
   }
 
@@ -71,9 +49,9 @@ class ProfileModel extends ChangeNotifier {
     await _update();
   }
 
-  void clearProfiles() async {
+  Future clearProfiles() async {
     _profiles.clear();
-    await _update();
+    return _update();
   }
 
   Stream<List<dynamic>> activate(int index) async* {
@@ -104,17 +82,18 @@ class ProfileModel extends ChangeNotifier {
     return newFileNames;
   }
 
-  String _generateConfig() {
-    return JsonEncoder.withIndent("   ").convert({
+  @override
+  Map<String, dynamic> toMap() {
+    return {
       "profiles": _profiles.map((e) => e.toMap()).toList(),
-      "isDarkMode": settings.isDarkMode,
-      "themeColor": settings.themeColor.value,
-    });
+      "settings": settings.toMap()
+    };
   }
 
   Future _update() async {
+    debugPrint("hello");
     _createIfNotExists();
-    var json = _generateConfig();
+    var json = JsonEncoder.withIndent("   ").convert(toMap());
     await settings.profilesConfigFile.writeAsString(json);
     await _read();
   }
@@ -147,14 +126,16 @@ class ProfileModel extends ChangeNotifier {
 
       _profiles = [...profiles];
 
-      if (json.containsKey("themeColor")) {
-        var color = Color(json["themeColor"]);
-        settings.themeColor = color;
+      if (json.containsKey("settings")) {
+        settings = ProfileSettings.fromMap(json["settings"])
+            .copyWith(onUpdate: _update);
+        settings = settings.copyWith(
+            confirmations:
+                settings.confirmationSettings.copyWith(onUpdate: _update));
       }
-
-      settings.isDarkMode = json["isDarkMode"] ?? true;
     } on FormatException {
-      await settings.profilesConfigFile.writeAsString(_generateConfig());
+      await settings.profilesConfigFile
+          .writeAsString(JsonEncoder.withIndent("   ").convert(toMap()));
     } finally {
       notifyListeners();
     }

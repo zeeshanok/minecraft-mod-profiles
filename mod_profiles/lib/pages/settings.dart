@@ -80,19 +80,21 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: [
                           Row(children: [
                             OutlinedButton(
-                                onPressed: () =>
-                                    openPath(model, model.settings.profilesDir.path),
+                                onPressed: () => openPath(
+                                    model, model.settings.profilesDir.path),
                                 child: Text("Open")),
                             SizedBox(
                               width: 10,
                             ),
                             Text("Profile config folder"),
                           ]),
-                          SizedBox(height: 5,),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Row(children: [
                             OutlinedButton(
-                                onPressed: () =>
-                                    openPath(model, model.settings.minecraftModDir.path),
+                                onPressed: () => openPath(
+                                    model, model.settings.minecraftModDir.path),
                                 child: Text("Open")),
                             SizedBox(
                               width: 10,
@@ -101,15 +103,58 @@ class _SettingsPageState extends State<SettingsPage> {
                           ])
                         ],
                       )),
-                  // SettingsSection(
-                  //   heading: "Confirmation Dialogs",
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                        
-                  //     ],
-                  //   )
-                  // )
+                  SettingsSection(
+                      heading: "Confirmation Dialogs",
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Ask before: "),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Switch(
+                                        value: model.settings
+                                            .confirmationSettings.onActivate,
+                                        onChanged: (val) => model
+                                            .settings
+                                            .confirmationSettings
+                                            .onActivate = val),
+                                    Text("Activating a profile")
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Switch(
+                                        value: model.settings
+                                            .confirmationSettings.onDelete,
+                                        onChanged: (val) => model
+                                            .settings
+                                            .confirmationSettings
+                                            .onDelete = val),
+                                    Text("Deleting a profile")
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Switch(
+                                        value: model.settings
+                                            .confirmationSettings.onClear,
+                                        onChanged: (val) => model
+                                            .settings
+                                            .confirmationSettings
+                                            .onClear = val),
+                                    Text("Clearing all profiles")
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
                 ],
               ),
             ),
@@ -119,5 +164,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-
-class Settings {}

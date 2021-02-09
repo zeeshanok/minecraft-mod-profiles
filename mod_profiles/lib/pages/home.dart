@@ -46,16 +46,24 @@ class _HomePageState extends State<HomePage>
     Navigator.of(context).pushNamed('addProfile');
   }
 
-  void handleClear(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => ConfirmDialog(
-          title: Text("Are you sure you want to delete all your profiles?"),
-          onSubmit: (response) {
-            if (response)
-              Provider.of<ProfileModel>(context, listen: false).clearProfiles();
-          }),
-    );
+  void handleClear(BuildContext context) async {
+    if (Provider.of<ProfileModel>(context, listen: false)
+        .settings
+        .confirmationSettings
+        .onClear) {
+      showDialog(
+        context: context,
+        builder: (context) => ConfirmDialog(
+            title: Text("Are you sure you want to delete all your profiles?"),
+            onSubmit: (response) async {
+              if (response)
+                await Provider.of<ProfileModel>(context, listen: false)
+                    .clearProfiles();
+            }),
+      );
+    } else {
+      await Provider.of<ProfileModel>(context, listen: false).clearProfiles();
+    }
   }
 
   void handleActivate(
@@ -68,17 +76,25 @@ class _HomePageState extends State<HomePage>
     await Future.delayed(Duration(milliseconds: 200));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: model.settings.themeColor,
-      content: Text("Activated ${model.profiles[index].name}", style: TextStyle(color: Colors.white),),
+      content: Text(
+        "Activated ${model.profiles[index].name}",
+        style: TextStyle(color: Colors.white),
+      ),
       action: SnackBarAction(
         label: "Open mods folder",
         textColor: Colors.white,
         onPressed: () {
-          Process.run("explorer.exe", [model.settings.minecraftModDir.path], runInShell: true);
+          Process.run("explorer.exe", [model.settings.minecraftModDir.path],
+              runInShell: true);
         },
       ),
       // behavior: SnackBarBehavior.floating,
       duration: Duration(seconds: 2),
     ));
+  }
+
+  void handleDelete({BuildContext context, ProfileModel model, int index}) {
+    Provider.of<ProfileModel>(context, listen: false).removeProfile(index);
   }
 
   @override
@@ -141,10 +157,16 @@ class _HomePageState extends State<HomePage>
                         itemBuilder: (listContext, i) {
                           var profile = model.profiles[i];
                           return ProfileWidget(
-                            profile,
-                            i,
+                            profile: profile,
+                            index: i,
+                            onDelete: (context) => handleDelete(
+                                context: listContext, model: model, index: i),
                             onActivate: (context) => handleActivate(
                                 context: listContext, model: model, index: i),
+                            showActivateDialog:
+                                model.settings.confirmationSettings.onActivate,
+                            showDeleteDialog:
+                                model.settings.confirmationSettings.onDelete,
                           );
                         },
                         itemCount: length,

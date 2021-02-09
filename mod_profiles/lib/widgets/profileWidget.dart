@@ -12,33 +12,48 @@ class ProfileWidget extends StatelessWidget {
   final Profile profile;
   final int index;
   final void Function(BuildContext context) onActivate;
+  final void Function(BuildContext context) onDelete;
+  final bool showActivateDialog;
+  final bool showDeleteDialog;
 
-  ProfileWidget(this.profile, this.index, {this.onActivate});
+  ProfileWidget(
+      {this.profile,
+      this.index,
+      this.onActivate,
+      this.onDelete,
+      this.showActivateDialog,
+      this.showDeleteDialog});
 
   void handleActivate(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => ConfirmDialog(
-              onSubmit: (response) {
-                if (response) onActivate(context);
-              },
-              title: Text("Are you sure you want to activate this profile?"),
-              content: Text(
-                  "This will clear your mods folder and copy your profile's mods into your mods folder."),
-            ));
+    if (showActivateDialog) {
+      showDialog(
+          context: context,
+          builder: (context) => ConfirmDialog(
+                onSubmit: (response) {
+                  if (response) onActivate(context);
+                },
+                title: Text("Are you sure you want to activate this profile?"),
+                content: Text(
+                    "This will clear your mods folder and copy your profile's mods into your mods folder."),
+              ));
+    } else {
+      onActivate(context);
+    }
   }
 
   void handleDelete(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => ConfirmDialog(
-              onSubmit: (response) {
-                if (response)
-                  Provider.of<ProfileModel>(context, listen: false)
-                      .removeProfile(index);
-              },
-              title: Text("Are you sure you want to delete this profile?"),
-            ));
+    if (showDeleteDialog ?? true) {
+      showDialog(
+          context: context,
+          builder: (context) => ConfirmDialog(
+                onSubmit: (response) {
+                  if (response) onDelete(context);
+                },
+                title: Text("Are you sure you want to delete this profile?"),
+              ));
+    } else {
+      onDelete(context);
+    }
   }
 
   @override
@@ -86,8 +101,8 @@ class ProfileWidget extends StatelessWidget {
                               height: 200,
                               width: 400,
                               child: Scrollbar(
-                                thickness: 5,
-                                isAlwaysShown: true,
+                                  thickness: 5,
+                                  isAlwaysShown: true,
                                   child: ListView.builder(
                                       itemCount: profile.mods.length,
                                       itemBuilder: (context, i) =>
