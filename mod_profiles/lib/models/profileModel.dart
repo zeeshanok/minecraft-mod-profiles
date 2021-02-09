@@ -91,7 +91,6 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
   }
 
   Future _update() async {
-    debugPrint("hello");
     _createIfNotExists();
     var json = JsonEncoder.withIndent("   ").convert(toMap());
     await settings.profilesConfigFile.writeAsString(json);

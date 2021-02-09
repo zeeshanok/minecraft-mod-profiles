@@ -90,7 +90,6 @@ class ConfirmationSettings implements JsonConfig {
   bool get onDelete => _onDelete;
   set onDelete(bool value) {
     _onDelete = value;
-    debugPrint(value.toString());
     _onUpdate?.call();
   }
 
@@ -98,7 +97,6 @@ class ConfirmationSettings implements JsonConfig {
   bool get onActivate => _onActivate;
   set onActivate(bool value) {
     _onActivate = value;
-    debugPrint(value.toString());
     _onUpdate?.call();
   }
 
@@ -106,7 +104,6 @@ class ConfirmationSettings implements JsonConfig {
   bool get onClear => _onClear;
   set onClear(bool value) {
     _onClear = value;
-    debugPrint(value.toString());
     _onUpdate?.call();
   }
 
