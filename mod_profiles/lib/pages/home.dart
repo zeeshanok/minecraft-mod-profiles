@@ -19,10 +19,13 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   List<String> paths = [];
   double progress = 1;
-  String progressMessage;
+  String progressMessage = "";
   AnimationController _controller;
   Animation<double> _animation;
   Tween<double> _tween;
+  double _opacity = 1;
+  double _letterSpacing = 0;
+  bool _isBusy = false;
 
   @override
   void initState() {
@@ -66,31 +69,34 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-  void handleActivate(
+  Future handleActivate(
       {BuildContext context, ProfileModel model, int index}) async {
+    setState(() => _isBusy = true);
     await for (var item in model.activate(index)) {
       progressMessage = item[2];
       _setTarget(item[0] / item[1]);
     }
     await _setTarget(0);
-    await Future.delayed(Duration(milliseconds: 200));
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: model.settings.themeColor,
-      content: Text(
-        "Activated ${model.profiles[index].name}",
-        style: TextStyle(color: Colors.white),
-      ),
-      action: SnackBarAction(
-        label: "Open mods folder",
-        textColor: Colors.white,
-        onPressed: () {
-          Process.run("explorer.exe", [model.settings.minecraftModDir.path],
-              runInShell: true);
-        },
-      ),
-      // behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 2),
-    ));
+    setState(() {
+      _opacity = 0;
+    });
+    await Future.delayed(
+        Duration(milliseconds: 500),
+        () => setState(() {
+              _opacity = 1;
+              _letterSpacing = 0.7;
+              progressMessage = "Activated ${model.profiles[index].name}";
+              _isBusy = false;
+            }));
+    await Future.delayed(
+        Duration(seconds: 2), () => setState(() => _opacity = 0));
+    await Future.delayed(Duration(milliseconds: 200),
+        () => setState(() => progressMessage = ""));
+    setState(() {
+      _letterSpacing = 0;
+      _opacity = 1;
+    });
+    // Yes, this is bad practice, but it works
   }
 
   void handleDelete({BuildContext context, ProfileModel model, int index}) {
@@ -159,6 +165,7 @@ class _HomePageState extends State<HomePage>
                           return ProfileWidget(
                             profile: profile,
                             index: i,
+                            activateButtonIsDisabled: _isBusy,
                             onDelete: (context) => handleDelete(
                                 context: listContext, model: model, index: i),
                             onActivate: (context) => handleActivate(
@@ -189,14 +196,23 @@ class _HomePageState extends State<HomePage>
             animation: _animation,
             builder: (context, _) => Column(
               children: [
-                if (_animation.value > 0) Text(progressMessage),
-                SizedBox(
-                  height: 5,
-                ),
                 LinearProgressIndicator(
                   backgroundColor: Colors.transparent,
                   value: _animation.value,
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                AnimatedOpacity(
+                    duration: Duration(milliseconds: 200),
+                    opacity: _opacity,
+                    child: Text(
+                      progressMessage,
+                      style: TextStyle(letterSpacing: _letterSpacing),
+                    )),
+                SizedBox(
+                  height: 10,
+                )
               ],
             ),
           )

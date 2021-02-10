@@ -8,51 +8,62 @@ import 'package:mod_profiles/widgets/shortenedList.dart';
 import 'package:mod_profiles/widgets/smallIconButton.dart';
 import 'package:provider/provider.dart';
 
-class ProfileWidget extends StatelessWidget {
+class ProfileWidget extends StatefulWidget {
   final Profile profile;
   final int index;
-  final void Function(BuildContext context) onActivate;
+  final Future Function(BuildContext context) onActivate;
   final void Function(BuildContext context) onDelete;
   final bool showActivateDialog;
   final bool showDeleteDialog;
+  final bool activateButtonIsDisabled;
 
   ProfileWidget(
       {this.profile,
       this.index,
+      this.activateButtonIsDisabled,
       this.onActivate,
       this.onDelete,
       this.showActivateDialog,
       this.showDeleteDialog});
 
-  void handleActivate(BuildContext context) {
-    if (showActivateDialog) {
+  @override
+  _ProfileWidgetState createState() => _ProfileWidgetState();
+}
+
+class _ProfileWidgetState extends State<ProfileWidget> {
+
+  void handleActivate(BuildContext context) async {
+    var activate = () async {
+      await widget.onActivate(context);
+    };
+    if (widget.showActivateDialog) {
       showDialog(
           context: context,
           builder: (context) => ConfirmDialog(
-                onSubmit: (response) {
-                  if (response) onActivate(context);
+                onSubmit: (response) async {
+                  if (response) await activate();
                 },
                 title: Text("Are you sure you want to activate this profile?"),
                 content: Text(
                     "This will clear your mods folder and copy your profile's mods into your mods folder."),
               ));
     } else {
-      onActivate(context);
+      await activate();
     }
   }
 
   void handleDelete(BuildContext context) {
-    if (showDeleteDialog ?? true) {
+    if (widget.showDeleteDialog ?? true) {
       showDialog(
           context: context,
           builder: (context) => ConfirmDialog(
                 onSubmit: (response) {
-                  if (response) onDelete(context);
+                  if (response) widget.onDelete(context);
                 },
                 title: Text("Are you sure you want to delete this profile?"),
               ));
     } else {
-      onDelete(context);
+      widget.onDelete(context);
     }
   }
 
@@ -73,7 +84,7 @@ class ProfileWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  profile.name,
+                  widget.profile.name,
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
                 // ShortenedList(
@@ -104,12 +115,15 @@ class ProfileWidget extends StatelessWidget {
                                   thickness: 5,
                                   isAlwaysShown: true,
                                   child: ListView.builder(
-                                      itemCount: profile.mods.length,
+                                      itemCount: widget.profile.mods.length,
                                       itemBuilder: (context, i) =>
-                                          SelectableText(getFileName(profile
-                                              .mods[i]
+                                          SelectableText(getFileName(widget
+                                              .profile.mods[i]
                                               .substring(
-                                                  0, profile.mods[i].length - 4)
+                                                  0,
+                                                  widget.profile.mods[i]
+                                                          .length -
+                                                      4)
                                               .replaceAll(
                                                   RegExp(r"[-_]+"), " ")))))),
                           title: Text("Mods"),
@@ -130,7 +144,7 @@ class ProfileWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ElevatedButton(
-                      onPressed: () => handleActivate(context),
+                      onPressed: widget.activateButtonIsDisabled ? null : () => handleActivate(context),
                       child: Text("Activate")),
                   SizedBox(
                     height: 5,
@@ -143,11 +157,11 @@ class ProfileWidget extends StatelessWidget {
                           Icons.edit,
                           size: 20,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.of(context)
                               .push(createRoute(EditProfilePage(
-                            profile: profile,
-                            index: index,
+                            profile: widget.profile,
+                            index: widget.index,
                           )));
                         },
                       ),
@@ -156,7 +170,7 @@ class ProfileWidget extends StatelessWidget {
                           Icons.close,
                           size: 20,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           handleDelete(context);
                         },
                       )
