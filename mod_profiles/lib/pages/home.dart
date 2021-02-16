@@ -157,26 +157,28 @@ class _HomePageState extends State<HomePage>
               builder: (context, model, _) {
                 var length = model.profiles.length;
                 return length > 0
-                    ? ListView.separated(
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 18),
-                        itemBuilder: (listContext, i) {
-                          var profile = model.profiles[i];
-                          return ProfileWidget(
-                            profile: profile,
-                            index: i,
-                            activateButtonIsDisabled: _isBusy,
-                            onDelete: (context) => handleDelete(
-                                context: listContext, model: model, index: i),
-                            onActivate: (context) => handleActivate(
-                                context: listContext, model: model, index: i),
-                            showActivateDialog:
-                                model.settings.confirmationSettings.onActivate,
-                            showDeleteDialog:
-                                model.settings.confirmationSettings.onDelete,
-                          );
-                        },
-                        itemCount: length,
+                    ? Scrollbar(
+                        child: ListView.separated(
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 18),
+                          itemBuilder: (listContext, i) {
+                            var profile = model.profiles[i];
+                            return ProfileWidget(
+                              profile: profile,
+                              index: i,
+                              activateButtonIsDisabled: _isBusy,
+                              onDelete: (context) => handleDelete(
+                                  context: listContext, model: model, index: i),
+                              onActivate: (context) => handleActivate(
+                                  context: listContext, model: model, index: i),
+                              showActivateDialog: model
+                                  .settings.confirmationSettings.onActivate,
+                              showDeleteDialog:
+                                  model.settings.confirmationSettings.onDelete,
+                            );
+                          },
+                          itemCount: length,
+                        ),
                       )
                     : Align(
                         child: TextButton.icon(

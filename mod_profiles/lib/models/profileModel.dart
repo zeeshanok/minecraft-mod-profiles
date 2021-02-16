@@ -67,8 +67,15 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
     for (var mod in profile.mods) {
       count += 1;
       yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
-      await File(path.join(settings.profilesModDir.path, mod))
-          .copy(path.join(settings.minecraftModDir.path, mod));
+      var modFile = File(mod);
+      if (modFile.isAbsolute) {
+        // We dont want it to break if the mod string is somehow absolute
+        await modFile.copy(path.join(
+            settings.minecraftModDir.path, getFileName(modFile.path)));
+      } else {
+        await File(path.join(settings.profilesModDir.path, modFile.path)).copy(path
+            .join(settings.minecraftModDir.path, getFileName(modFile.path)));
+      }
     }
   }
 
@@ -77,8 +84,9 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
     for (var fileName in fileNames) {
       var file = await File(fileName)
           .copy(path.join(settings.profilesModDir.path, getFileName(fileName)));
-      newFileNames.add(file.path);
+      newFileNames.add(getFileName(file.path));
     }
+    debugPrint(newFileNames.toString());
     return newFileNames;
   }
 
