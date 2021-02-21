@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/colorSquare.dart';
-import 'package:provider/provider.dart';
 
 class ColorPicker extends StatefulWidget {
   final List<Color> colors;

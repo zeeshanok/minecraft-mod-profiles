@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mod_profiles/models/profile.dart';
-import 'package:mod_profiles/models/profileModel.dart';
 import 'package:mod_profiles/pages/editProfile.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/confirmDialog.dart';
-import 'package:mod_profiles/widgets/shortenedList.dart';
 import 'package:mod_profiles/widgets/smallIconButton.dart';
-import 'package:provider/provider.dart';
 
 class ProfileWidget extends StatefulWidget {
   final Profile profile;

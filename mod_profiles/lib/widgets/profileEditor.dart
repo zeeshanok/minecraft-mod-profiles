@@ -35,8 +35,7 @@ class _ProfileEditorState extends State<ProfileEditor> {
   void showFilePicker() async {
     try {
       List<FilePickerCross> files =
-          await FilePickerCross.importMultipleFromStorage(
-              fileExtension: 'jar', type: FileTypeCross.custom);
+          await FilePickerCross.importMultipleFromStorage(type: FileTypeCross.any);
       setState(() {
         modPaths.addAll(files.map((e) => e.path));
         modPaths = modPaths.toSet().toList();
