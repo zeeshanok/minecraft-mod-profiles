@@ -54,27 +54,28 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
     return _update();
   }
 
-  Stream<List<dynamic>> activate(int index) async* {
+  Future activate(int index) async {
     var profile = _profiles[index];
     var minecraftDirMods = await settings.minecraftModDir.list().toList();
-    int total = minecraftDirMods.length + profile.mods.length;
-    int count = 0;
+    // int total = minecraftDirMods.length + profile.mods.length;
+    // int count = 0;
     for (var mod in minecraftDirMods) {
-      count += 1;
-      yield [count, total, "Deleting ${getFileName(mod.path)} in mods folder"];
+      // count += 1;
+      // yield [count, total, "Deleting ${getFileName(mod.path)} in mods folder"];
       await mod.delete();
     }
     for (var mod in profile.mods) {
-      count += 1;
-      yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
+      // count += 1;
+      // yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
       var modFile = File(mod);
       if (modFile.isAbsolute) {
         // We dont want it to break if the mod string is somehow absolute
         await modFile.copy(path.join(
             settings.minecraftModDir.path, getFileName(modFile.path)));
       } else {
-        await File(path.join(settings.profilesModDir.path, modFile.path)).copy(path
-            .join(settings.minecraftModDir.path, getFileName(modFile.path)));
+        await File(path.join(settings.profilesModDir.path, modFile.path)).copy(
+            path.join(
+                settings.minecraftModDir.path, getFileName(modFile.path)));
       }
     }
   }

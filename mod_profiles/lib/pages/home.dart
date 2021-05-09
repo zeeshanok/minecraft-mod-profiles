@@ -17,6 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  int selectedIndex = -1;
+
   List<String> paths = [];
   double progress = 1;
   String progressMessage = "";
@@ -72,30 +74,36 @@ class _HomePageState extends State<HomePage>
   Future handleActivate(
       {BuildContext context, ProfileModel model, int index}) async {
     setState(() => _isBusy = true);
-    await for (var item in model.activate(index)) {
-      progressMessage = item[2];
-      _setTarget(item[0] / item[1]);
-    }
-    await _setTarget(0);
+    await model.activate(index);
     setState(() {
-      _opacity = 0;
+      selectedIndex = -1;
+      _isBusy = false;
     });
-    await Future.delayed(
-        Duration(milliseconds: 500),
-        () => setState(() {
-              _opacity = 1;
-              _letterSpacing = 0.7;
-              progressMessage = "Activated ${model.profiles[index].name}";
-              _isBusy = false;
-            }));
-    await Future.delayed(
-        Duration(seconds: 2), () => setState(() => _opacity = 0));
-    await Future.delayed(Duration(milliseconds: 200),
-        () => setState(() => progressMessage = ""));
-    setState(() {
-      _letterSpacing = 0;
-      _opacity = 1;
-    });
+    // await for (var item in model.activate(index)) {
+    //   progressMessage = item[2];
+    //   _setTarget(item[0] / item[1]);
+    // }
+    // await _setTarget(0);
+    // setState(() {
+    //   _opacity = 0;
+    // });
+    // await Future.delayed(
+    //     Duration(milliseconds: 500),
+    //     () => setState(() {
+    //           _opacity = 1;
+    //           _letterSpacing = 0.7;
+    //           progressMessage = "Activated ${model.profiles[index].name}";
+    //           _isBusy = false;
+    //         }));
+    // await Future.delayed(
+    //     Duration(seconds: 2), () => setState(() => _opacity = 0));
+    // await Future.delayed(Duration(milliseconds: 200),
+    //     () => setState(() => progressMessage = ""));
+    // setState(() {
+    //   _letterSpacing = 0;
+    //   _opacity = 1;
+    //   selectedIndex = -1;
+    // });
     // Yes, this is bad practice, but it works
   }
 
@@ -107,120 +115,156 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     var color = Theme.of(context).appBarTheme.backgroundColor;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: color,
-        title: Text("Mod Profiles"),
-        actions: [
-          Provider.of<ProfileModel>(context).profiles.length > 0
-              ? HintedIconButton(
-                  icon: Icon(
-                    Icons.delete_sweep_outlined,
-                    size: 23,
-                  ),
-                  onPressed: () => handleClear(context),
-                  label: "Clear",
-                  labelStyle: TextStyle(fontSize: 13),
-                )
-              : SizedBox.shrink(),
-          HintedIconButton(
-            onPressed: navigateToAdd,
-            icon: Icon(
-              Icons.add,
-              size: 23,
-            ),
-            label: "Add",
-            labelStyle: TextStyle(fontSize: 13),
-          ),
-          IconButton(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: color,
+          title: Text("Mod Profiles"),
+          actions: [
+            Provider.of<ProfileModel>(context).profiles.length > 0
+                ? HintedIconButton(
+                    icon: Icon(
+                      Icons.delete_sweep_outlined,
+                      size: 23,
+                    ),
+                    onPressed: () => handleClear(context),
+                    label: "Clear",
+                    labelStyle: TextStyle(fontSize: 13),
+                  )
+                : SizedBox.shrink(),
+            HintedIconButton(
+              onPressed: navigateToAdd,
               icon: Icon(
-                Icons.settings_outlined,
-                size: 22,
+                Icons.add,
+                size: 23,
               ),
-              // label: "Settings",
-              // labelStyle: TextStyle(fontSize: 13),
-              onPressed: () {
-                Navigator.of(context).pushNamed('settings');
-              }),
-          SizedBox(
-            width: 10,
-          )
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-              child: Container(
-            padding: EdgeInsets.all(10),
-            child: Consumer<ProfileModel>(
-              builder: (context, model, _) {
-                var length = model.profiles.length;
-                return length > 0
-                    ? Scrollbar(
-                        child: ListView.separated(
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 18),
-                          itemBuilder: (listContext, i) {
-                            var profile = model.profiles[i];
-                            return ProfileWidget(
-                              profile: profile,
-                              index: i,
-                              activateButtonIsDisabled: _isBusy,
-                              onDelete: (context) => handleDelete(
-                                  context: listContext, model: model, index: i),
-                              onActivate: (context) => handleActivate(
-                                  context: listContext, model: model, index: i),
-                              showActivateDialog: model
-                                  .settings.confirmationSettings.onActivate,
-                              showDeleteDialog:
-                                  model.settings.confirmationSettings.onDelete,
-                            );
-                          },
-                          itemCount: length,
-                        ),
-                      )
-                    : Align(
-                        child: TextButton.icon(
-                          onPressed: navigateToAdd,
-                          icon: Icon(Icons.add),
-                          label: Text("Add a new profile"),
-                          style: ButtonStyle(
-                              foregroundColor: MaterialStateColor.resolveWith(
-                                  (_) => Theme.of(context).accentColor)),
-                        ),
-                        alignment: Alignment.center,
-                      );
-              },
+              label: "Add",
+              labelStyle: TextStyle(fontSize: 13),
             ),
-          )),
-          AnimatedBuilder(
-            animation: _animation,
-            builder: (context, _) => Column(
-              children: [
-                LinearProgressIndicator(
-                  backgroundColor: Colors.transparent,
-                  value: _animation.value,
+            IconButton(
+                icon: Icon(
+                  Icons.settings_outlined,
+                  size: 22,
                 ),
-                SizedBox(
-                  height: 10,
+                // label: "Settings",
+                // labelStyle: TextStyle(fontSize: 13),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('settings');
+                }),
+            SizedBox(
+              width: 10,
+            )
+          ],
+        ),
+        body: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Consumer<ProfileModel>(
+                  builder: (context, model, _) {
+                    var length = model.profiles.length;
+                    return length > 0
+                        ? Scrollbar(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: 18),
+                              itemBuilder: (listContext, i) {
+                                var profile = model.profiles[i];
+                                return ProfileWidget(
+                                  isSelected: selectedIndex == i,
+                                  profile: profile,
+                                  index: i,
+                                  activateButtonIsDisabled: _isBusy,
+                                  onDelete: (context) => handleDelete(
+                                      context: listContext,
+                                      model: model,
+                                      index: i),
+                                  onActivate: (context) =>
+                                      Future.sync(() => setState(() {
+                                            selectedIndex = i;
+                                          })),
+                                  showActivateDialog: model
+                                      .settings.confirmationSettings.onActivate,
+                                  showDeleteDialog: model
+                                      .settings.confirmationSettings.onDelete,
+                                );
+                              },
+                              itemCount: length,
+                            ),
+                          )
+                        : Align(
+                            child: TextButton.icon(
+                              onPressed: navigateToAdd,
+                              icon: Icon(Icons.add),
+                              label: Text("Add a new profile"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateColor.resolveWith((_) =>
+                                          Theme.of(context).accentColor)),
+                            ),
+                            alignment: Alignment.center,
+                          );
+                  },
                 ),
-                AnimatedOpacity(
-                    duration: Duration(milliseconds: 200),
-                    opacity: _opacity,
-                    child: Text(
-                      progressMessage,
-                      style: TextStyle(letterSpacing: _letterSpacing),
-                    )),
-                SizedBox(
-                  height: 10,
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+              ),
+              // AnimatedBuilder(
+              //   animation: _animation,
+              //   builder: (context, _) => Column(
+              //     children: [
+              //       LinearProgressIndicator(
+              //         backgroundColor: Colors.transparent,
+              //         value: _animation.value,
+              //         color: Provider.of<ProfileModel>(context).settings.themeColor,
+              //       ),
+              //       SizedBox(
+              //         height: 10,
+              //       ),
+              //       AnimatedOpacity(
+              //           duration: Duration(milliseconds: 200),
+              //           opacity: _opacity,
+              //           child: Text(
+              //             progressMessage,
+              //             style: TextStyle(letterSpacing: _letterSpacing),
+              //           )),
+              //       SizedBox(
+              //         height: 10,
+              //       )
+              //     ],
+              //   ),
+              // )
+              ElevatedButton.icon(
+                  icon: SizedBox(
+                    height: 28,
+                    width: 28,
+                    child: _isBusy
+                        ? Padding(
+                            padding: EdgeInsets.all(6),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ))
+                        : Icon(Icons.done),
+                  ),
+                  onPressed: selectedIndex != -1
+                      ? () {
+                          handleActivate(
+                              context: context,
+                              index: selectedIndex,
+                              model: Provider.of<ProfileModel>(context,
+                                  listen: false));
+                        }
+                      : null,
+                  label: Text(
+                    "Activate",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.resolveWith(
+                          (states) => EdgeInsets.symmetric(vertical: 16))))
+            ],
+          ),
+        ));
   }
 
   Future _setTarget(double val) {

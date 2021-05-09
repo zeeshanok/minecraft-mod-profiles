@@ -4,6 +4,7 @@ import 'package:mod_profiles/pages/editProfile.dart';
 import 'package:mod_profiles/utils/consts.dart';
 import 'package:mod_profiles/widgets/confirmDialog.dart';
 import 'package:mod_profiles/widgets/smallIconButton.dart';
+import 'package:path/path.dart';
 
 class ProfileWidget extends StatefulWidget {
   final Profile profile;
@@ -13,6 +14,7 @@ class ProfileWidget extends StatefulWidget {
   final bool showActivateDialog;
   final bool showDeleteDialog;
   final bool activateButtonIsDisabled;
+  final bool isSelected;
 
   ProfileWidget(
       {this.profile,
@@ -21,14 +23,14 @@ class ProfileWidget extends StatefulWidget {
       this.onActivate,
       this.onDelete,
       this.showActivateDialog,
-      this.showDeleteDialog});
+      this.showDeleteDialog,
+      this.isSelected});
 
   @override
   _ProfileWidgetState createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-
   void handleActivate(BuildContext context) async {
     var activate = () async {
       await widget.onActivate(context);
@@ -141,8 +143,16 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ElevatedButton(
-                      onPressed: widget.activateButtonIsDisabled ? null : () => handleActivate(context),
-                      child: Text("Activate")),
+                    onPressed: widget.activateButtonIsDisabled
+                        ? null
+                        : () => handleActivate(context),
+                    child: Text(widget.isSelected ? "Selected" : "Select"),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (states) =>
+                              widget.isSelected ? Colors.transparent : null),
+                    ),
+                  ),
                   SizedBox(
                     height: 5,
                   ),
