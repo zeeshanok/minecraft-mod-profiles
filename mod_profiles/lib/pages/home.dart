@@ -184,8 +184,6 @@ class _HomePageState extends State<HomePage>
                                       Future.sync(() => setState(() {
                                             selectedIndex = i;
                                           })),
-                                  showActivateDialog: model
-                                      .settings.confirmationSettings.onActivate,
                                   showDeleteDialog: model
                                       .settings.confirmationSettings.onDelete,
                                 );

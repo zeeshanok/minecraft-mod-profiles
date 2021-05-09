@@ -11,7 +11,6 @@ class ProfileWidget extends StatefulWidget {
   final int index;
   final Future Function(BuildContext context) onActivate;
   final void Function(BuildContext context) onDelete;
-  final bool showActivateDialog;
   final bool showDeleteDialog;
   final bool activateButtonIsDisabled;
   final bool isSelected;
@@ -22,7 +21,6 @@ class ProfileWidget extends StatefulWidget {
       this.activateButtonIsDisabled,
       this.onActivate,
       this.onDelete,
-      this.showActivateDialog,
       this.showDeleteDialog,
       this.isSelected});
 
@@ -35,20 +33,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     var activate = () async {
       await widget.onActivate(context);
     };
-    if (widget.showActivateDialog) {
-      showDialog(
-          context: context,
-          builder: (context) => ConfirmDialog(
-                onSubmit: (response) async {
-                  if (response) await activate();
-                },
-                title: Text("Are you sure you want to activate this profile?"),
-                content: Text(
-                    "This will clear your mods folder and copy your profile's mods into your mods folder."),
-              ));
-    } else {
-      await activate();
-    }
+
+    await activate();
   }
 
   void handleDelete(BuildContext context) {

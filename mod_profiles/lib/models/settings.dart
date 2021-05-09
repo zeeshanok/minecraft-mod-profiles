@@ -93,13 +93,6 @@ class ConfirmationSettings implements JsonConfig {
     _onUpdate?.call();
   }
 
-  bool _onActivate;
-  bool get onActivate => _onActivate;
-  set onActivate(bool value) {
-    _onActivate = value;
-    _onUpdate?.call();
-  }
-
   bool _onClear;
   bool get onClear => _onClear;
   set onClear(bool value) {
@@ -109,12 +102,7 @@ class ConfirmationSettings implements JsonConfig {
 
   Future Function() _onUpdate;
 
-  ConfirmationSettings(
-      {bool onActivate,
-      bool onClear,
-      bool onDelete,
-      Function() onUpdate}) {
-    _onActivate = onActivate;
+  ConfirmationSettings({bool onClear, bool onDelete, Function() onUpdate}) {
     _onClear = onClear;
     _onDelete = onDelete;
     _onUpdate = onUpdate;
@@ -122,23 +110,16 @@ class ConfirmationSettings implements JsonConfig {
 
   @override
   Map<String, dynamic> toMap() {
-    return {
-      "onActivate": onActivate,
-      "onDelete": onDelete,
-      "onClear": onClear
-    };
+    return {"onDelete": onDelete, "onClear": onClear};
   }
 
   factory ConfirmationSettings.defaultSettings() {
-    return ConfirmationSettings(
-        onActivate: true, onClear: true, onDelete: true);
+    return ConfirmationSettings(onClear: true, onDelete: true);
   }
 
   factory ConfirmationSettings.fromMap(Map<String, dynamic> map) {
     return ConfirmationSettings(
-        onActivate: map["onActivate"],
-        onClear: map["onClear"],
-        onDelete: map["onDelete"]);
+        onClear: map["onClear"], onDelete: map["onDelete"]);
   }
 }
 

@@ -118,18 +118,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   children: [
                                     Switch(
                                         value: model.settings
-                                            .confirmationSettings.onActivate,
-                                        onChanged: (val) => model
-                                            .settings
-                                            .confirmationSettings
-                                            .onActivate = val),
-                                    Text("Activating a profile")
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Switch(
-                                        value: model.settings
                                             .confirmationSettings.onDelete,
                                         onChanged: (val) => model
                                             .settings

@@ -33,17 +33,11 @@ extension ProfileSettingsCopyWith on ProfileSettings {
 }
 
 extension ConfirmationSettingsCopyWith on ConfirmationSettings {
-  ConfirmationSettings copyWith({
-    bool onActivate,
-    bool onClear,
-    bool onDelete,
-    Future<dynamic> Function() onUpdate
-  }) {
+  ConfirmationSettings copyWith(
+      {bool onClear, bool onDelete, Future<dynamic> Function() onUpdate}) {
     return ConfirmationSettings(
-      onActivate: onActivate ?? this._onActivate,
-      onClear: onClear ?? this._onClear,
-      onDelete: onDelete ?? this._onDelete,
-      onUpdate: onUpdate ?? this._onUpdate
-    );
+        onClear: onClear ?? this._onClear,
+        onDelete: onDelete ?? this._onDelete,
+        onUpdate: onUpdate ?? this._onUpdate);
   }
 }
