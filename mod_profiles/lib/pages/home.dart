@@ -22,9 +22,9 @@ class _HomePageState extends State<HomePage>
   List<String> paths = [];
   double progress = 1;
   String progressMessage = "";
-  AnimationController _controller;
-  Animation<double> _animation;
-  Tween<double> _tween;
+  late AnimationController _controller;
+  Animation<double>? _animation;
+  late Tween<double> _tween;
   double _opacity = 1;
   double _letterSpacing = 0;
   bool _isBusy = false;
@@ -53,9 +53,9 @@ class _HomePageState extends State<HomePage>
 
   void handleClear(BuildContext context) async {
     if (Provider.of<ProfileModel>(context, listen: false)
-        .settings
-        .confirmationSettings
-        .onClear) {
+        .settings!
+        .confirmationSettings!
+        .onClear!) {
       showDialog(
         context: context,
         builder: (context) => ConfirmDialog(
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future handleActivate(
-      {BuildContext context, ProfileModel model, int index}) async {
+      {BuildContext? context, required ProfileModel model, required int index}) async {
     setState(() => _isBusy = true);
     await model.activate(index);
     setState(() {
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage>
     // Yes, this is bad practice, but it works
   }
 
-  void handleDelete({BuildContext context, ProfileModel model, int index}) {
+  void handleDelete({required BuildContext context, ProfileModel? model, required int index}) {
     Provider.of<ProfileModel>(context, listen: false).removeProfile(index);
   }
 
@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage>
                                             selectedIndex = i;
                                           })),
                                   showDeleteDialog: model
-                                      .settings.confirmationSettings.onDelete,
+                                      .settings!.confirmationSettings!.onDelete,
                                 );
                               },
                               itemCount: length,

@@ -7,13 +7,13 @@ import 'package:mod_profiles/widgets/smallIconButton.dart';
 import 'package:path/path.dart';
 
 class ProfileWidget extends StatefulWidget {
-  final Profile profile;
-  final int index;
-  final Future Function(BuildContext context) onActivate;
-  final void Function(BuildContext context) onDelete;
-  final bool showDeleteDialog;
-  final bool activateButtonIsDisabled;
-  final bool isSelected;
+  final Profile? profile;
+  final int? index;
+  final Future Function(BuildContext context)? onActivate;
+  final void Function(BuildContext context)? onDelete;
+  final bool? showDeleteDialog;
+  final bool? activateButtonIsDisabled;
+  final bool? isSelected;
 
   ProfileWidget(
       {this.profile,
@@ -31,7 +31,7 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   void handleActivate(BuildContext context) async {
     var activate = () async {
-      await widget.onActivate(context);
+      await widget.onActivate!(context);
     };
 
     await activate();
@@ -43,12 +43,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           context: context,
           builder: (context) => ConfirmDialog(
                 onSubmit: (response) {
-                  if (response) widget.onDelete(context);
+                  if (response) widget.onDelete!(context);
                 },
                 title: Text("Are you sure you want to delete this profile?"),
               ));
     } else {
-      widget.onDelete(context);
+      widget.onDelete!(context);
     }
   }
 
@@ -69,7 +69,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.profile.name,
+                  widget.profile!.name!,
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
                 // ShortenedList(
@@ -100,13 +100,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   thickness: 5,
                                   isAlwaysShown: true,
                                   child: ListView.builder(
-                                      itemCount: widget.profile.mods.length,
+                                      itemCount: widget.profile!.mods!.length,
                                       itemBuilder: (context, i) =>
                                           SelectableText(getFileName(widget
-                                              .profile.mods[i]
+                                              .profile!.mods![i]!
                                               .substring(
                                                   0,
-                                                  widget.profile.mods[i]
+                                                  widget.profile!.mods![i]!
                                                           .length -
                                                       4)
                                               .replaceAll(
@@ -129,14 +129,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ElevatedButton(
-                    onPressed: widget.activateButtonIsDisabled
+                    onPressed: widget.activateButtonIsDisabled!
                         ? null
                         : () => handleActivate(context),
-                    child: Text(widget.isSelected ? "Selected" : "Select"),
+                    child: Text(widget.isSelected! ? "Selected" : "Select"),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                           (states) =>
-                              widget.isSelected ? Colors.transparent : null),
+                              widget.isSelected! ? Colors.transparent : null),
                     ),
                   ),
                   SizedBox(

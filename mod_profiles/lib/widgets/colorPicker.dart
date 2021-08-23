@@ -4,14 +4,14 @@ import 'package:mod_profiles/widgets/colorSquare.dart';
 
 class ColorPicker extends StatefulWidget {
   final List<Color> colors;
-  final Color initialActive;
-  final int crossAxisCount;
+  final Color? initialActive;
+  final int? crossAxisCount;
   final double size;
-  final void Function(Color color) onPressed;
+  final void Function(Color color)? onPressed;
 
   ColorPicker({
-    @required this.colors,
-    @required this.size,
+    required this.colors,
+    required this.size,
     this.initialActive,
     this.onPressed,
     this.crossAxisCount,
@@ -22,7 +22,7 @@ class ColorPicker extends StatefulWidget {
 }
 
 class _ColorPickerState extends State<ColorPicker> {
-  Color active;
+  Color? active;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _ColorPickerState extends State<ColorPicker> {
                   () => active = color,
                 );
               },
-              active: active.value == color.value,
+              active: active!.value == color.value,
               hoverBorderColor: Theme.of(context).scaffoldBackgroundColor
             ))
         .toList();

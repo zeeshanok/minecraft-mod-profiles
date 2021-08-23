@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  final Widget title;
-  final Widget content;
+  final Widget? title;
+  final Widget? content;
   final void Function(bool response) onSubmit;
 
-  ConfirmDialog({this.title, this.content, @required this.onSubmit});
+  ConfirmDialog({this.title, this.content, required this.onSubmit});
 
   @override
   Widget build(BuildContext context) {

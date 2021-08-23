@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class SettingsSection extends StatelessWidget {
   final String heading;
   final Widget child;
-  final Key key;
-  SettingsSection({@required this.heading, @required this.child, this.key})
+  final Key? key;
+  SettingsSection({required this.heading, required this.child, this.key})
       : super(key: key);
 
   @override

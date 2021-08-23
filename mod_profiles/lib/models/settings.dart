@@ -6,23 +6,23 @@ import 'package:path/path.dart' as path;
 part 'settings.g.dart';
 
 class ProfileSettings implements JsonConfig {
-  ConfirmationSettings confirmationSettings;
-  Directory minecraftModDir;
-  Directory minecraftDir;
-  Directory profilesDir;
-  Directory profilesModDir;
-  File profilesConfigFile;
+  ConfirmationSettings? confirmationSettings;
+  Directory? minecraftModDir;
+  Directory? minecraftDir;
+  Directory? profilesDir;
+  Directory? profilesModDir;
+  File? profilesConfigFile;
 
-  Future Function() _onUpdate;
+  Future Function()? _onUpdate;
 
-  Color _color;
+  Color? _color;
   Color get themeColor => _color ?? Colors.cyan;
   set themeColor(Color value) {
     _color = value;
     _onUpdate?.call();
   }
 
-  bool _isDarkMode;
+  bool? _isDarkMode;
   bool get isDarkMode => _isDarkMode ?? true;
   set isDarkMode(bool value) {
     _isDarkMode = value;
@@ -35,10 +35,10 @@ class ProfileSettings implements JsonConfig {
       this.profilesConfigFile,
       this.profilesDir,
       this.profilesModDir,
-      ConfirmationSettings confirmations,
-      Color themeColor,
-      bool isDarkMode,
-      Future Function() onUpdate}) {
+      ConfirmationSettings? confirmations,
+      Color? themeColor,
+      bool? isDarkMode,
+      Future Function()? onUpdate}) {
     _color = themeColor;
     _isDarkMode = isDarkMode;
     _onUpdate = onUpdate;
@@ -51,7 +51,7 @@ class ProfileSettings implements JsonConfig {
     return {
       "isDarkMode": isDarkMode,
       "themeColor": themeColor.value,
-      "confirmations": confirmationSettings.toMap()
+      "confirmations": confirmationSettings!.toMap()
     };
   }
 
@@ -68,7 +68,7 @@ class ProfileSettings implements JsonConfig {
     var env = Platform.environment;
 
     var minecraftDir = Directory(
-        path.join(env["USERPROFILE"], "AppData", "Roaming", ".minecraft"));
+        path.join(env["USERPROFILE"]!, "AppData", "Roaming", ".minecraft"));
     var minecraftModDir = Directory(path.join(minecraftDir.path, "mods"));
     var profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
 
@@ -86,26 +86,26 @@ class ProfileSettings implements JsonConfig {
 }
 
 class ConfirmationSettings implements JsonConfig {
-  bool _onDelete;
-  bool get onDelete => _onDelete;
-  set onDelete(bool value) {
+  bool? _onDelete;
+  bool? get onDelete => _onDelete;
+  set onDelete(bool? value) {
     _onDelete = value;
     _onUpdate?.call();
   }
 
-  bool _onClear;
-  bool get onClear => _onClear;
-  set onClear(bool value) {
+  bool? _onClear;
+  bool? get onClear => _onClear;
+  set onClear(bool? value) {
     _onClear = value;
     _onUpdate?.call();
   }
 
-  Future Function() _onUpdate;
+  Future Function()? _onUpdate;
 
-  ConfirmationSettings({bool onClear, bool onDelete, Function() onUpdate}) {
+  ConfirmationSettings({bool? onClear, bool? onDelete, Function()? onUpdate}) {
     _onClear = onClear;
     _onDelete = onDelete;
-    _onUpdate = onUpdate;
+    _onUpdate = onUpdate as Future<dynamic> Function()?;
   }
 
   @override

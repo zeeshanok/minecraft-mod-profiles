@@ -11,9 +11,9 @@ class ShortenedList extends StatefulWidget {
   _ShortenedListState createState() => _ShortenedListState();
 
   ShortenedList(
-      {@required this.builder,
-      @required this.maxItems,
-      @required this.itemCount,
+      {required this.builder,
+      required this.maxItems,
+      required this.itemCount,
       this.shortenedText = 'Show more',
       this.expandedText = 'Collapse'});
 }

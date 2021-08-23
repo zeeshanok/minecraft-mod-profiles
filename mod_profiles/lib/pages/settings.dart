@@ -61,11 +61,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               Switch(
-                                value: model.settings.isDarkMode,
+                                value: model.settings!.isDarkMode,
                                 onChanged: (value) => model.setDarkMode(value),
                               ),
                               Text(
-                                model.settings.isDarkMode ? "ON" : "OFF",
+                                model.settings!.isDarkMode ? "ON" : "OFF",
                                 style:
                                     TextStyle(letterSpacing: 1.4, fontSize: 10),
                               )
@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Row(children: [
                             OutlinedButton(
                                 onPressed: () => openPath(
-                                    model, model.settings.profilesDir.path),
+                                    model, model.settings!.profilesDir!.path),
                                 child: Text("Open")),
                             SizedBox(
                               width: 10,
@@ -94,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Row(children: [
                             OutlinedButton(
                                 onPressed: () => openPath(
-                                    model, model.settings.minecraftModDir.path),
+                                    model, model.settings!.minecraftModDir!.path),
                                 child: Text("Open")),
                             SizedBox(
                               width: 10,
@@ -117,11 +117,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Row(
                                   children: [
                                     Switch(
-                                        value: model.settings
-                                            .confirmationSettings.onDelete,
+                                        value: model.settings!
+                                            .confirmationSettings!.onDelete!,
                                         onChanged: (val) => model
-                                            .settings
-                                            .confirmationSettings
+                                            .settings!
+                                            .confirmationSettings!
                                             .onDelete = val),
                                     Text("Deleting a profile")
                                   ],
@@ -129,11 +129,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Row(
                                   children: [
                                     Switch(
-                                        value: model.settings
-                                            .confirmationSettings.onClear,
+                                        value: model.settings!
+                                            .confirmationSettings!.onClear!,
                                         onChanged: (val) => model
-                                            .settings
-                                            .confirmationSettings
+                                            .settings!
+                                            .confirmationSettings!
                                             .onClear = val),
                                     Text("Clearing all profiles")
                                   ],

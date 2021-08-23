@@ -3,14 +3,14 @@ import 'package:flutter/rendering.dart';
 
 class ColorSquare extends StatefulWidget {
   final Color color;
-  final double size;
-  final Color hoverBorderColor;
+  final double? size;
+  final Color? hoverBorderColor;
   final void Function() onActive;
   final bool active;
   ColorSquare(
-      {@required this.color,
-      @required this.onActive,
-      @required this.active,
+      {required this.color,
+      required this.onActive,
+      required this.active,
       this.size,
       this.hoverBorderColor,
       });

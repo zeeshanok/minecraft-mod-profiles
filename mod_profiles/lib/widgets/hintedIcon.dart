@@ -3,10 +3,10 @@ import 'package:flutter/rendering.dart';
 import 'package:mod_profiles/utils/consts.dart';
 
 class HintedIconButton extends StatelessWidget {
-  final Widget icon;
-  final String label;
-  final TextStyle labelStyle;
-  final void Function() onPressed;
+  final Widget? icon;
+  final String? label;
+  final TextStyle? labelStyle;
+  final void Function()? onPressed;
 
   HintedIconButton({this.icon, this.label, this.labelStyle, this.onPressed});
 
@@ -19,9 +19,9 @@ class HintedIconButton extends StatelessWidget {
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 8),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            icon,
+            icon!,
             Text(
-              label,
+              label!,
               style: labelStyle ?? keyboardHintTextStyle(),
             )
           ]),

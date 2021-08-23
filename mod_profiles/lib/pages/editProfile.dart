@@ -7,8 +7,8 @@ import 'package:mod_profiles/widgets/profileEditor.dart';
 import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
-  final Profile profile;
-  final int index;
+  final Profile? profile;
+  final int? index;
 
   EditProfilePage({this.profile, this.index});
 
@@ -22,17 +22,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void handleEdit(BuildContext context, Profile profile) async {
     setState(() => editing = true);
     await Provider.of<ProfileModel>(context, listen: false)
-        .editProfile(widget.index, profile);
+        .editProfile(widget.index!, profile);
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     Profile p = Profile(
-        widget.profile.name,
-        widget.profile.mods
+        widget.profile!.name,
+        widget.profile!.mods!
             .map((e) => Provider.of<ProfileModel>(context, listen: false)
-                .getFullProfileModPath(e))
+                .getFullProfileModPath(e!))
             .toList());
     return EscapePop(
       child: Scaffold(

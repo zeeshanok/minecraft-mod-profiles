@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 class Profile {
-  String name;
-  List<String> mods;
+  String? name;
+  List<String?>? mods;
 
   Profile(this.name, this.mods);
 
-  List<String> get modsSorted {
-    var list = [...mods];
-    list.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+  List<String?> get modsSorted {
+    var list = [...mods!];
+    list.sort((a, b) => a!.toLowerCase().compareTo(b!.toLowerCase()));
     return list;
   }
 
@@ -17,7 +17,7 @@ class Profile {
   }
 
   Map<String, dynamic> toMap() {
-    return {"name": name, "mods": mods.toSet().toList()};
+    return {"name": name, "mods": mods!.toSet().toList()};
   }
 
   static fromJSON(String json) {
@@ -31,7 +31,7 @@ class Profile {
 
   @override
   String toString() {
-    return name + " " + mods.toString();
+    return name! + " " + mods.toString();
   }
 }
 

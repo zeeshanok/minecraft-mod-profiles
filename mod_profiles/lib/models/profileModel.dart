@@ -13,7 +13,7 @@ import 'package:path/path.dart' as path;
 class ProfileModel extends ChangeNotifier implements JsonConfig {
   List<Profile> _profiles = [];
 
-  ProfileSettings settings;
+  ProfileSettings? settings;
 
   UnmodifiableListView<Profile> get profiles => UnmodifiableListView(_profiles);
 
@@ -28,9 +28,9 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
   Future<void> addProfile(Profile profile) async {
     return Future(() async {
       List<String> fileNames = [];
-      for (var fileName in profile.mods) {
-        var file = await File(fileName).copy(
-            path.join(settings.profilesModDir.path, getFileName(fileName)));
+      for (var fileName in profile.mods!) {
+        var file = await File(fileName!).copy(
+            path.join(settings!.profilesModDir!.path, getFileName(fileName)));
         fileNames.add(getFileName(file.path));
       }
       _profiles.add(Profile(profile.name, fileNames));
@@ -39,7 +39,7 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
   }
 
   Future editProfile(int index, Profile newProfile) async {
-    var newFiles = await _copyToProfileModsDir(newProfile.mods);
+    var newFiles = await _copyToProfileModsDir(newProfile.mods!);
     _profiles[index] = Profile(newProfile.name, newFiles);
     await _update();
   }
@@ -56,7 +56,7 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
 
   Future activate(int index) async {
     var profile = _profiles[index];
-    var minecraftDirMods = await settings.minecraftModDir.list().toList();
+    var minecraftDirMods = await settings!.minecraftModDir!.list().toList();
     // int total = minecraftDirMods.length + profile.mods.length;
     // int count = 0;
     for (var mod in minecraftDirMods) {
@@ -64,27 +64,27 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
       // yield [count, total, "Deleting ${getFileName(mod.path)} in mods folder"];
       await mod.delete();
     }
-    for (var mod in profile.mods) {
+    for (var mod in profile.mods!) {
       // count += 1;
       // yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
-      var modFile = File(mod);
+      var modFile = File(mod!);
       if (modFile.isAbsolute) {
         // We dont want it to break if the mod string is somehow absolute
         await modFile.copy(path.join(
-            settings.minecraftModDir.path, getFileName(modFile.path)));
+            settings!.minecraftModDir!.path, getFileName(modFile.path)));
       } else {
-        await File(path.join(settings.profilesModDir.path, modFile.path)).copy(
+        await File(path.join(settings!.profilesModDir!.path, modFile.path)).copy(
             path.join(
-                settings.minecraftModDir.path, getFileName(modFile.path)));
+                settings!.minecraftModDir!.path, getFileName(modFile.path)));
       }
     }
   }
 
-  Future<List<String>> _copyToProfileModsDir(List<String> fileNames) async {
+  Future<List<String>> _copyToProfileModsDir(List<String?> fileNames) async {
     List<String> newFileNames = [];
     for (var fileName in fileNames) {
-      var file = await File(fileName)
-          .copy(path.join(settings.profilesModDir.path, getFileName(fileName)));
+      var file = await File(fileName!)
+          .copy(path.join(settings!.profilesModDir!.path, getFileName(fileName)));
       newFileNames.add(getFileName(file.path));
     }
     debugPrint(newFileNames.toString());
@@ -95,33 +95,33 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
   Map<String, dynamic> toMap() {
     return {
       "profiles": _profiles.map((e) => e.toMap()).toList(),
-      "settings": settings.toMap()
+      "settings": settings!.toMap()
     };
   }
 
   Future _update() async {
     _createIfNotExists();
     var json = JsonEncoder.withIndent("   ").convert(toMap());
-    await settings.profilesConfigFile.writeAsString(json);
+    await settings!.profilesConfigFile!.writeAsString(json);
     await _read();
   }
 
   void _createIfNotExists() async {
-    if (!(await settings.profilesConfigFile.exists())) {
-      await settings.profilesConfigFile.create(recursive: true);
-      await settings.profilesConfigFile.writeAsString(jsonEncode({
+    if (!(await settings!.profilesConfigFile!.exists())) {
+      await settings!.profilesConfigFile!.create(recursive: true);
+      await settings!.profilesConfigFile!.writeAsString(jsonEncode({
         "profiles": [],
       }));
-      debugPrint("created config file in ${settings.profilesConfigFile.path}");
+      debugPrint("created config file in ${settings!.profilesConfigFile!.path}");
     }
-    if (!(await settings.profilesModDir.exists())) {
-      await settings.profilesModDir.create();
+    if (!(await settings!.profilesModDir!.exists())) {
+      await settings!.profilesModDir!.create();
     }
   }
 
   Future _read() async {
     _createIfNotExists();
-    String content = await settings.profilesConfigFile.readAsString();
+    String content = await settings!.profilesConfigFile!.readAsString();
     try {
       Map<String, dynamic> json = jsonDecode(content);
 
@@ -139,10 +139,10 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
             .copyWith(onUpdate: _update);
         settings = settings.copyWith(
             confirmations:
-                settings.confirmationSettings.copyWith(onUpdate: _update));
+                settings!.confirmationSettings.copyWith(onUpdate: _update));
       }
     } on FormatException {
-      await settings.profilesConfigFile
+      await settings!.profilesConfigFile!
           .writeAsString(JsonEncoder.withIndent("   ").convert(toMap()));
     } finally {
       notifyListeners();
@@ -151,16 +151,16 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
 
   String getFullProfileModPath(String fileName) {
     if (File(fileName).isAbsolute) return fileName;
-    return path.join(settings.profilesModDir.path, fileName);
+    return path.join(settings!.profilesModDir!.path, fileName);
   }
 
   void setThemeColor(Color color) {
-    settings.themeColor = color;
+    settings!.themeColor = color;
     _update();
   }
 
   void setDarkMode(bool isDark) {
-    settings.isDarkMode = isDark;
+    settings!.isDarkMode = isDark;
     _update();
   }
 }

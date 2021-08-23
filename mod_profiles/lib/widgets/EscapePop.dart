@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EscapePop extends StatelessWidget {
-  final Widget child;
-  final void Function(RawKeyEvent) onKey;
+  final Widget? child;
+  final void Function(RawKeyEvent)? onKey;
 
   EscapePop({this.child, this.onKey});
 
@@ -17,7 +17,7 @@ class EscapePop extends StatelessWidget {
           Navigator.of(context).pop();
         }
       },
-      child: child,
+      child: child!,
     );
   }
 }
