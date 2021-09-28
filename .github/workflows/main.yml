@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "2.6.0"
+          channel: "beta"
+
+      - name: Get dependencies
+        run: |
+          cd mod_profiles
+          flutter pub get
+
+      - name: Build exe
+        run: flutter build windows
+
+      - name: Archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: mod_profiles
+          path: build/windows/runner/Release
