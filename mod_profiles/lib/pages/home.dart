@@ -78,7 +78,8 @@ class _HomePageState extends State<HomePage>
         appBar: AppBar(
           elevation: 0,
           backgroundColor: color,
-          title: Text("Mod Profiles"),
+          title: Padding(
+              padding: EdgeInsets.only(left: 5), child: Text("Mod Profiles")),
           actions: [
             Provider.of<ProfileModel>(context).profiles.length > 0
                 ? HintedIconButton(
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage>
           ],
         ),
         body: Container(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -124,12 +125,13 @@ class _HomePageState extends State<HomePage>
                     var length = model.profiles.length;
                     return length > 0
                         ? Scrollbar(
+                            thickness: 2,
                             child: ListView.separated(
                               separatorBuilder: (context, index) =>
-                                  SizedBox(height: 18),
+                                  SizedBox(height: 14),
                               itemBuilder: (listContext, i) {
                                 var profile = model.profiles[i];
-                                return ProfileWidget(
+                                var child = ProfileWidget(
                                   isSelected: selectedIndex == i,
                                   profile: profile,
                                   index: i,
@@ -147,6 +149,13 @@ class _HomePageState extends State<HomePage>
                                   showDeleteDialog: model
                                       .settings!.confirmationSettings!.onDelete,
                                 );
+                                return Padding(
+                                    padding: i == length - 1
+                                        ? const EdgeInsets.fromLTRB(
+                                            10, 0, 10, 10)
+                                        : const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                    child: child);
                               },
                               itemCount: length,
                             ),
@@ -168,35 +177,38 @@ class _HomePageState extends State<HomePage>
                   },
                 ),
               ),
-              ElevatedButton.icon(
-                  icon: SizedBox(
-                    height: 28,
-                    width: 28,
-                    child: _isBusy
-                        ? Padding(
-                            padding: EdgeInsets.all(6),
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ))
-                        : Icon(Icons.done),
-                  ),
-                  onPressed: selectedIndex != -1
-                      ? () {
-                          handleActivate(
-                              context: context,
-                              index: selectedIndex,
-                              model: Provider.of<ProfileModel>(context,
-                                  listen: false));
-                        }
-                      : null,
-                  label: Text(
-                    "Activate",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.resolveWith(
-                          (states) => EdgeInsets.symmetric(vertical: 16))))
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: ElevatedButton.icon(
+                    icon: SizedBox(
+                      height: 28,
+                      width: 28,
+                      child: _isBusy
+                          ? Padding(
+                              padding: EdgeInsets.all(6),
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ))
+                          : Icon(Icons.done),
+                    ),
+                    onPressed: selectedIndex != -1
+                        ? () {
+                            handleActivate(
+                                context: context,
+                                index: selectedIndex,
+                                model: Provider.of<ProfileModel>(context,
+                                    listen: false));
+                          }
+                        : null,
+                    label: Text(
+                      "Activate",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.resolveWith(
+                            (states) => EdgeInsets.symmetric(vertical: 16)))),
+              )
             ],
           ),
         ));

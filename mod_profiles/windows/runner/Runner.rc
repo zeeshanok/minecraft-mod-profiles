@@ -95,7 +95,7 @@ BEGIN
             VALUE "InternalName", "mod_profiles" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2021 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "mod_profiles.exe" "\0"
-            VALUE "ProductName", "mod_profiles" "\0"
+            VALUE "ProductName", "Mod Profiles" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

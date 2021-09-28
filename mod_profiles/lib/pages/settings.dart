@@ -46,8 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             colors: allowedThemeColors,
                             size: 15,
                             crossAxisCount: 4,
-                            initialActive:
-                                Theme.of(context).colorScheme.secondary,
+                            initialActive: Theme.of(context).accentColor,
                             onPressed: (color) => Provider.of<ProfileModel>(
                                     context,
                                     listen: false)

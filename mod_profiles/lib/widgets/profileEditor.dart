@@ -95,15 +95,14 @@ class _ProfileEditorState extends State<ProfileEditor> {
                           hintText: "Name",
                           focusedBorder: defaultInputBorder.copyWith(
                               borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary)),
+                                  color: Theme.of(context).accentColor)),
                           enabledBorder: defaultInputBorder,
                           focusedErrorBorder: defaultInputBorder.copyWith(
                               borderSide: BorderSide(color: Colors.red)),
                           errorBorder: defaultInputBorder.copyWith(
                               borderSide: BorderSide(color: Colors.red))),
                       cursorWidth: 2,
-                      cursorColor: Theme.of(context).colorScheme.secondary,
+                      cursorColor: Theme.of(context).accentColor,
                       validator: (value) {
                         if (value!.isEmpty) return "Name cannot be empty";
                         return null;
