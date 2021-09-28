@@ -5,8 +5,7 @@ class SmallIconButton extends StatelessWidget {
   final Widget icon;
   final void Function() onPressed;
   final EdgeInsetsGeometry? padding;
-  SmallIconButton(
-      {required this.icon, required this.onPressed, this.padding});
+  SmallIconButton({required this.icon, required this.onPressed, this.padding});
 
   @override
   Widget build(BuildContext context) {

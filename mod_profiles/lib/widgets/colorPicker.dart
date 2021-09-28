@@ -32,20 +32,18 @@ class _ColorPickerState extends State<ColorPicker> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> colors = widget.colors
         .map((color) => ColorSquare(
-              size: 40,
-              color: color,
-              onActive: () {
-                widget.onPressed?.call(color);
-                setState(
-                  () => active = color,
-                );
-              },
-              active: active!.value == color.value,
-              hoverBorderColor: Theme.of(context).scaffoldBackgroundColor
-            ))
+            size: 40,
+            color: color,
+            onActive: () {
+              widget.onPressed?.call(color);
+              setState(
+                () => active = color,
+              );
+            },
+            active: active!.value == color.value,
+            hoverBorderColor: Theme.of(context).scaffoldBackgroundColor))
         .toList();
     return Column(
         children: splitList(colors, widget.crossAxisCount ?? 4)

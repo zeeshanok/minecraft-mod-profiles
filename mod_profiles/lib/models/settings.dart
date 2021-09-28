@@ -67,8 +67,7 @@ class ProfileSettings implements JsonConfig {
   factory ProfileSettings.defaultSettings() {
     var env = Platform.environment;
 
-    var minecraftDir = Directory(
-        path.join(env["USERPROFILE"]!, "AppData", "Roaming", ".minecraft"));
+    var minecraftDir = Directory(path.join(env["appdata"]!, ".minecraft"));
     var minecraftModDir = Directory(path.join(minecraftDir.path, "mods"));
     var profilesDir = Directory(path.join(minecraftDir.path, "mod-profiles"));
 

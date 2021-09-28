@@ -57,24 +57,18 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
   Future activate(int index) async {
     var profile = _profiles[index];
     var minecraftDirMods = await settings!.minecraftModDir!.list().toList();
-    // int total = minecraftDirMods.length + profile.mods.length;
-    // int count = 0;
     for (var mod in minecraftDirMods) {
-      // count += 1;
-      // yield [count, total, "Deleting ${getFileName(mod.path)} in mods folder"];
       await mod.delete();
     }
     for (var mod in profile.mods!) {
-      // count += 1;
-      // yield [count, total, "Copying ${getFileName(mod)} into mods folder"];
       var modFile = File(mod!);
       if (modFile.isAbsolute) {
         // We dont want it to break if the mod string is somehow absolute
         await modFile.copy(path.join(
             settings!.minecraftModDir!.path, getFileName(modFile.path)));
       } else {
-        await File(path.join(settings!.profilesModDir!.path, modFile.path)).copy(
-            path.join(
+        await File(path.join(settings!.profilesModDir!.path, modFile.path))
+            .copy(path.join(
                 settings!.minecraftModDir!.path, getFileName(modFile.path)));
       }
     }
@@ -83,8 +77,8 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
   Future<List<String>> _copyToProfileModsDir(List<String?> fileNames) async {
     List<String> newFileNames = [];
     for (var fileName in fileNames) {
-      var file = await File(fileName!)
-          .copy(path.join(settings!.profilesModDir!.path, getFileName(fileName)));
+      var file = await File(fileName!).copy(
+          path.join(settings!.profilesModDir!.path, getFileName(fileName)));
       newFileNames.add(getFileName(file.path));
     }
     debugPrint(newFileNames.toString());
@@ -112,7 +106,8 @@ class ProfileModel extends ChangeNotifier implements JsonConfig {
       await settings!.profilesConfigFile!.writeAsString(jsonEncode({
         "profiles": [],
       }));
-      debugPrint("created config file in ${settings!.profilesConfigFile!.path}");
+      debugPrint(
+          "created config file in ${settings!.profilesConfigFile!.path}");
     }
     if (!(await settings!.profilesModDir!.exists())) {
       await settings!.profilesModDir!.create();

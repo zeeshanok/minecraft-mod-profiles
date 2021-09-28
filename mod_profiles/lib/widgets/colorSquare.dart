@@ -7,13 +7,13 @@ class ColorSquare extends StatefulWidget {
   final Color? hoverBorderColor;
   final void Function() onActive;
   final bool active;
-  ColorSquare(
-      {required this.color,
-      required this.onActive,
-      required this.active,
-      this.size,
-      this.hoverBorderColor,
-      });
+  ColorSquare({
+    required this.color,
+    required this.onActive,
+    required this.active,
+    this.size,
+    this.hoverBorderColor,
+  });
 
   @override
   _ColorSquareState createState() => _ColorSquareState();

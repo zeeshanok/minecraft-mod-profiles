@@ -22,40 +22,44 @@ class ModProfileApp extends StatelessWidget {
                     accentColor: model.settings!.themeColor,
                     scaffoldBackgroundColor: Colors.black,
                   )
-                : ThemeData.light().copyWith(
-                    accentColor: model.settings!.themeColor))
+                : ThemeData.light()
+                    .copyWith(accentColor: model.settings!.themeColor))
             .copyWith(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(primary: model.settings!.themeColor)),
-          textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(primary: model.settings!.themeColor)),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-              style: OutlinedButton.styleFrom(
-            side: BorderSide(color: model.settings!.themeColor),
-            primary: model.settings!.themeColor,
-          )),
-          switchTheme: SwitchThemeData(
-              thumbColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected) ||
-                states.contains(MaterialState.focused)) {
-              return model.settings!.themeColor;
-            } else {
-              return null;
-            }
-          }), trackColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected) ||
-                states.contains(MaterialState.focused)) {
-              return model.settings!.themeColor.withAlpha(150);
-            } else {
-              return null;
-            }
-          })),
-          appBarTheme: AppBarTheme(
-            elevation: 0,
-            backgroundColor: model.settings!.isDarkMode ? Colors.transparent: model.settings!.themeColor
-          ),
-          dialogBackgroundColor: model.settings!.isDarkMode ? Colors.black : ThemeData.light().scaffoldBackgroundColor
-        ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ElevatedButton.styleFrom(
+                        primary: model.settings!.themeColor)),
+                textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                        primary: model.settings!.themeColor)),
+                outlinedButtonTheme: OutlinedButtonThemeData(
+                    style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: model.settings!.themeColor),
+                  primary: model.settings!.themeColor,
+                )),
+                switchTheme: SwitchThemeData(
+                    thumbColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected) ||
+                      states.contains(MaterialState.focused)) {
+                    return model.settings!.themeColor;
+                  } else {
+                    return null;
+                  }
+                }), trackColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.selected) ||
+                      states.contains(MaterialState.focused)) {
+                    return model.settings!.themeColor.withAlpha(150);
+                  } else {
+                    return null;
+                  }
+                })),
+                appBarTheme: AppBarTheme(
+                    elevation: 0,
+                    backgroundColor: model.settings!.isDarkMode
+                        ? Colors.transparent
+                        : model.settings!.themeColor),
+                dialogBackgroundColor: model.settings!.isDarkMode
+                    ? Colors.black
+                    : ThemeData.light().scaffoldBackgroundColor),
         debugShowCheckedModeBanner: false,
         initialRoute: 'home',
         onGenerateRoute: (settings) {

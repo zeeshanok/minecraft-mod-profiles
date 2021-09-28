@@ -95,14 +95,15 @@ class _ProfileEditorState extends State<ProfileEditor> {
                           hintText: "Name",
                           focusedBorder: defaultInputBorder.copyWith(
                               borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary)),
                           enabledBorder: defaultInputBorder,
                           focusedErrorBorder: defaultInputBorder.copyWith(
                               borderSide: BorderSide(color: Colors.red)),
                           errorBorder: defaultInputBorder.copyWith(
                               borderSide: BorderSide(color: Colors.red))),
                       cursorWidth: 2,
-                      cursorColor: Theme.of(context).accentColor,
+                      cursorColor: Theme.of(context).colorScheme.secondary,
                       validator: (value) {
                         if (value!.isEmpty) return "Name cannot be empty";
                         return null;
@@ -186,8 +187,7 @@ class _ProfileEditorState extends State<ProfileEditor> {
                               padding: const EdgeInsets.all(6),
                               child: CircularProgressIndicator(
                                 backgroundColor: Colors.transparent,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                color: Colors.white,
                                 strokeWidth: 2,
                               ),
                             )

@@ -19,25 +19,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int selectedIndex = -1;
 
-  List<String> paths = [];
-  double progress = 1;
-  String progressMessage = "";
-  late AnimationController _controller;
-  Animation<double>? _animation;
-  late Tween<double> _tween;
-  double _opacity = 1;
-  double _letterSpacing = 0;
   bool _isBusy = false;
-
-  @override
-  void initState() {
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
-    _tween = Tween(begin: 0, end: 0);
-    _animation = _tween
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    super.initState();
-  }
 
   List<String> listDir(Directory dir) {
     List<String> list = [];
@@ -47,9 +29,7 @@ class _HomePageState extends State<HomePage>
     return list;
   }
 
-  void navigateToAdd() {
-    Navigator.of(context).pushNamed('addProfile');
-  }
+  void navigateToAdd() => Navigator.of(context).pushNamed('addProfile');
 
   void handleClear(BuildContext context) async {
     if (Provider.of<ProfileModel>(context, listen: false)
@@ -72,43 +52,23 @@ class _HomePageState extends State<HomePage>
   }
 
   Future handleActivate(
-      {BuildContext? context, required ProfileModel model, required int index}) async {
+      {BuildContext? context,
+      required ProfileModel model,
+      required int index}) async {
     setState(() => _isBusy = true);
     await model.activate(index);
     setState(() {
       selectedIndex = -1;
       _isBusy = false;
     });
-    // await for (var item in model.activate(index)) {
-    //   progressMessage = item[2];
-    //   _setTarget(item[0] / item[1]);
-    // }
-    // await _setTarget(0);
-    // setState(() {
-    //   _opacity = 0;
-    // });
-    // await Future.delayed(
-    //     Duration(milliseconds: 500),
-    //     () => setState(() {
-    //           _opacity = 1;
-    //           _letterSpacing = 0.7;
-    //           progressMessage = "Activated ${model.profiles[index].name}";
-    //           _isBusy = false;
-    //         }));
-    // await Future.delayed(
-    //     Duration(seconds: 2), () => setState(() => _opacity = 0));
-    // await Future.delayed(Duration(milliseconds: 200),
-    //     () => setState(() => progressMessage = ""));
-    // setState(() {
-    //   _letterSpacing = 0;
-    //   _opacity = 1;
-    //   selectedIndex = -1;
-    // });
-    // Yes, this is bad practice, but it works
   }
 
-  void handleDelete({required BuildContext context, ProfileModel? model, required int index}) {
+  void handleDelete(
+      {required BuildContext context,
+      ProfileModel? model,
+      required int index}) {
     Provider.of<ProfileModel>(context, listen: false).removeProfile(index);
+    if (index == selectedIndex) setState(() => selectedIndex = -1);
   }
 
   @override
@@ -145,8 +105,6 @@ class _HomePageState extends State<HomePage>
                   Icons.settings_outlined,
                   size: 22,
                 ),
-                // label: "Settings",
-                // labelStyle: TextStyle(fontSize: 13),
                 onPressed: () {
                   Navigator.of(context).pushNamed('settings');
                 }),
@@ -176,14 +134,16 @@ class _HomePageState extends State<HomePage>
                                   profile: profile,
                                   index: i,
                                   activateButtonIsDisabled: _isBusy,
-                                  onDelete: (context) => handleDelete(
+                                  onDelete: () => handleDelete(
                                       context: listContext,
                                       model: model,
                                       index: i),
-                                  onActivate: (context) =>
+                                  onSelect: () =>
                                       Future.sync(() => setState(() {
                                             selectedIndex = i;
                                           })),
+                                  onDeselect: () =>
+                                      setState(() => selectedIndex = -1),
                                   showDeleteDialog: model
                                       .settings!.confirmationSettings!.onDelete,
                                 );
@@ -199,38 +159,15 @@ class _HomePageState extends State<HomePage>
                               style: ButtonStyle(
                                   foregroundColor:
                                       MaterialStateColor.resolveWith((_) =>
-                                          Theme.of(context).accentColor)),
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .secondary)),
                             ),
                             alignment: Alignment.center,
                           );
                   },
                 ),
               ),
-              // AnimatedBuilder(
-              //   animation: _animation,
-              //   builder: (context, _) => Column(
-              //     children: [
-              //       LinearProgressIndicator(
-              //         backgroundColor: Colors.transparent,
-              //         value: _animation.value,
-              //         color: Provider.of<ProfileModel>(context).settings.themeColor,
-              //       ),
-              //       SizedBox(
-              //         height: 10,
-              //       ),
-              //       AnimatedOpacity(
-              //           duration: Duration(milliseconds: 200),
-              //           opacity: _opacity,
-              //           child: Text(
-              //             progressMessage,
-              //             style: TextStyle(letterSpacing: _letterSpacing),
-              //           )),
-              //       SizedBox(
-              //         height: 10,
-              //       )
-              //     ],
-              //   ),
-              // )
               ElevatedButton.icon(
                   icon: SizedBox(
                     height: 28,
@@ -263,12 +200,5 @@ class _HomePageState extends State<HomePage>
             ],
           ),
         ));
-  }
-
-  Future _setTarget(double val) {
-    _tween.begin = _tween.end;
-    _controller.reset();
-    _tween.end = val;
-    return _controller.forward();
   }
 }

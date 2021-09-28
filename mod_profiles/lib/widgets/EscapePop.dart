@@ -12,11 +12,12 @@ class EscapePop extends StatelessWidget {
     return RawKeyboardListener(
       focusNode: FocusNode(),
       autofocus: true,
-      onKey: onKey ?? (value) {
-        if (value.isKeyPressed(LogicalKeyboardKey.escape)) {
-          Navigator.of(context).pop();
-        }
-      },
+      onKey: onKey ??
+          (value) {
+            if (value.isKeyPressed(LogicalKeyboardKey.escape)) {
+              Navigator.of(context).pop();
+            }
+          },
       child: child!,
     );
   }

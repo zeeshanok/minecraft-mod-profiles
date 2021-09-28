@@ -46,7 +46,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             colors: allowedThemeColors,
                             size: 15,
                             crossAxisCount: 4,
-                            initialActive: Theme.of(context).accentColor,
+                            initialActive:
+                                Theme.of(context).colorScheme.secondary,
                             onPressed: (color) => Provider.of<ProfileModel>(
                                     context,
                                     listen: false)
@@ -93,8 +94,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           Row(children: [
                             OutlinedButton(
-                                onPressed: () => openPath(
-                                    model, model.settings!.minecraftModDir!.path),
+                                onPressed: () => openPath(model,
+                                    model.settings!.minecraftModDir!.path),
                                 child: Text("Open")),
                             SizedBox(
                               width: 10,
