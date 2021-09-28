@@ -22,11 +22,16 @@ jobs:
           cd mod_profiles
           flutter pub get
 
+      - name: Enable desktop support
+        run: flutter config --enable-windows-desktop
+
       - name: Build exe
-        run: flutter build windows
+        run: |
+          cd mod_profiles
+          flutter build windows
 
       - name: Archive
         uses: actions/upload-artifact@v2
         with:
           name: mod_profiles
-          path: build/windows/runner/Release
+          path: mod_profiles/build/windows/runner/Release
